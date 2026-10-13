@@ -1,0 +1,487 @@
+<title>Progressive Edge</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Jura:wght@400;500;600;700&family=Quantico:wght@400;700&display=swap">
+
+<style>
+  /* === PROGRESSIVE EDGE — HOMEPAGE ===
+     Dark-first · Ink throughout · Ice accents · Copper CTAs */
+
+  :root {
+    --ink:          #0F1420;
+    --ink-2:        #162035;
+    --ink-3:        #1D2B45;
+    --slate:        #334155;
+    --silver:       #848D9B;
+    --silver-light: #C3CAD4;
+    --ice:          #2F8FA8;
+    --ice-light:    #9AE8F7;
+    --paper:        #F6F8FB;
+    --copper:       #C0623A;
+    --copper-light: #F0A27A;
+
+    --bg:        var(--ink);
+    --bg-2:      var(--ink-2);
+    --bg-3:      var(--ink-3);
+    --fg:        var(--paper);
+    --fg-muted:  var(--silver-light);
+    --border:    rgba(195,202,212,0.10);
+    --border-ice:rgba(47,143,168,0.35);
+
+    --f-logo: 'Michroma', monospace;
+    --f-head: 'Jura', sans-serif;
+    --f-body: 'Quantico', sans-serif;
+
+    color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--f-body);
+    font-size: 1rem;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(154,232,247,0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(154,232,247,0.022) 1px, transparent 1px);
+    background-size: 56px 56px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding-inline: 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 24px;
+    font-family: var(--f-body);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  .btn-copper { background: var(--copper); color: var(--paper); }
+  .btn-copper:hover { background: var(--copper-light); color: var(--ink); }
+  .btn-ice { background: transparent; color: var(--ice-light); border: 1px solid var(--ice); }
+  .btn-ice:hover { background: rgba(47,143,168,0.12); }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    background: rgba(15,20,32,0.95);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--ice);
+    box-shadow: 0 1px 24px rgba(47,143,168,0.18);
+    z-index: 100;
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: 18px;
+    gap: 24px;
+  }
+  .logo {
+    font-family: var(--f-logo);
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    display: flex;
+    align-items: baseline;
+    white-space: nowrap;
+  }
+  .logo-prog  { color: var(--paper); text-transform: uppercase; }
+  .logo-slash { color: var(--ice-light); margin-inline: 2px; }
+  .logo-edge  { color: var(--silver-light); text-transform: lowercase; }
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+    padding: 0;
+  }
+  .nav-links a {
+    color: var(--silver-light);
+    text-decoration: none;
+    font-family: var(--f-body);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--paper); }
+  @media (max-width: 680px) { .nav-links { display: none; } }
+
+  /* ── HERO ── */
+  .hero {
+    padding-block: 64px 56px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--ice);
+    box-shadow: 0 1px 32px rgba(47,143,168,0.18);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: -80px; top: -60px;
+    width: 560px; height: 480px;
+    background: radial-gradient(ellipse, rgba(47,143,168,0.16) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-inner { position: relative; }
+  .hero-inner::before {
+    content: '';
+    position: absolute;
+    left: -120px; bottom: -80px;
+    width: 400px; height: 300px;
+    background: radial-gradient(ellipse, rgba(192,98,58,0.07) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--f-body);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ice-light);
+    margin-bottom: 28px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 28px; height: 1px;
+    background: var(--ice-light);
+  }
+  .hero h1 {
+    font-family: var(--f-head);
+    font-size: clamp(2.4rem, 5.5vw, 4rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    text-wrap: balance;
+    max-width: 780px;
+    margin-bottom: 28px;
+  }
+  .hero h1 em { font-style: normal; color: var(--ice-light); }
+  .hero-sub {
+    font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+    color: var(--fg-muted);
+    max-width: 540px;
+    line-height: 1.75;
+    margin-bottom: 44px;
+  }
+  .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
+  .hero-scroll {
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--f-body);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--silver);
+  }
+  .scroll-track {
+    width: 48px; height: 1px;
+    background: var(--border);
+    position: relative; overflow: hidden;
+  }
+  .scroll-track::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -16px;
+    width: 16px; height: 1px;
+    background: var(--ice-light);
+    animation: slide 2s ease-in-out infinite;
+  }
+  @keyframes slide { 0% { left: -16px; } 100% { left: 48px; } }
+
+  /* ── SERVICES ── */
+  .services {
+    padding-block: 96px;
+    background: var(--bg-2);
+    border-top: 1px solid var(--border);
+  }
+  .section-label {
+    font-family: var(--f-body);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--ice-light);
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-family: var(--f-head);
+    font-size: clamp(1.5rem, 3.2vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: 0.02em;
+    text-wrap: balance;
+    margin-bottom: 52px;
+    max-width: 520px;
+  }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2px;
+    background: var(--border);
+  }
+  .service-card {
+    background: var(--bg-3);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.25s;
+  }
+  .service-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--copper);
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+  .service-card:hover { background: #1A2D4A; }
+  .service-card:hover::after { opacity: 1; }
+  .service-num {
+    font-family: var(--f-logo);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--ice-light);
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .service-num::before {
+    content: '';
+    display: block;
+    width: 24px; height: 1px;
+    background: var(--ice-light);
+    opacity: 0.6;
+  }
+  .service-card h3 {
+    font-family: var(--f-head);
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 14px;
+    letter-spacing: 0.02em;
+  }
+  .service-card p {
+    font-size: 0.875rem;
+    color: var(--fg-muted);
+    line-height: 1.7;
+  }
+  .service-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 24px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ice-light);
+    text-decoration: none;
+    transition: gap 0.2s;
+  }
+  .service-link::after { content: '→'; }
+  .service-card:hover .service-link { gap: 14px; }
+
+  /* ── STATS ── */
+  .stats {
+    padding-block: 72px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 48px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: var(--f-head);
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    color: var(--ice-light);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+  .stat-label {
+    font-family: var(--f-body);
+    font-size: 0.72rem;
+    color: var(--silver);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* ── CTA BAND ── */
+  .cta-band {
+    padding-block: 96px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-band::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(47,143,168,0.07) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .cta-band h2 {
+    font-family: var(--f-head);
+    font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin-bottom: 16px;
+    text-wrap: balance;
+  }
+  .cta-band p {
+    color: var(--fg-muted);
+    max-width: 460px;
+    margin: 0 auto 36px;
+    font-size: 0.95rem;
+  }
+  .cta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    border-top: 1px solid var(--border);
+    padding-block: 36px;
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .footer-copy {
+    font-family: var(--f-body);
+    font-size: 0.72rem;
+    color: var(--silver);
+    letter-spacing: 0.1em;
+  }
+</style>
+
+<nav>
+  <div class="container nav-inner">
+    <a href="#" class="logo">
+      <span class="logo-prog">PROGRESSIVE</span><span class="logo-slash">/</span><span class="logo-edge">edge</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#">Services</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Insights</a></li>
+      <li><a href="#">Case Studies</a></li>
+    </ul>
+    <a href="#" class="btn btn-copper">Talk to Us</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">ai / technology / people</div>
+      <h1>AI That Works<br>For <em>People.</em></h1>
+      <p class="hero-sub">We help companies of every size adopt AI, modernize their technology, and build the leadership to sustain it — without the overhead of a full internal team.</p>
+      <div class="hero-ctas">
+        <a href="#" class="btn btn-copper">Book a Consult</a>
+        <a href="#" class="btn btn-ice">Our Services</a>
+      </div>
+      <div class="hero-scroll">
+        <div class="scroll-track"></div>
+        Scroll to explore
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="services">
+  <div class="container">
+    <div class="section-label">What We Do</div>
+    <h2 class="section-title">Three disciplines. One focused partner.</h2>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-num">01</div>
+        <h3>AI Strategy &amp; Implementation</h3>
+        <p>From identifying the right use cases to deploying production-ready AI — we move you from curiosity to competitive advantage.</p>
+        <a href="#" class="service-link">Learn more</a>
+      </div>
+      <div class="service-card">
+        <div class="service-num">02</div>
+        <h3>Technology Modernization</h3>
+        <p>Legacy systems holding you back? We architect migration paths, cloud strategies, and modern stacks that scale with your ambitions.</p>
+        <a href="#" class="service-link">Learn more</a>
+      </div>
+      <div class="service-card">
+        <div class="service-num">03</div>
+        <h3>Fractional Technology Leadership</h3>
+        <p>Senior CTO and technology leadership on demand. The strategic firepower of a seasoned exec, without the full-time cost.</p>
+        <a href="#" class="service-link">Learn more</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div><div class="stat-num">50+</div><div class="stat-label">Clients Served</div></div>
+      <div><div class="stat-num">12</div><div class="stat-label">Industries</div></div>
+      <div><div class="stat-num">3×</div><div class="stat-label">Avg. ROI on AI Projects</div></div>
+      <div><div class="stat-num">100%</div><div class="stat-label">Client Retention</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="container">
+    <h2>Ready to find your edge?</h2>
+    <p>Let's talk about where you want to go and how technology can get you there faster.</p>
+    <div class="cta-actions">
+      <a href="#" class="btn btn-copper">Book a Free Consultation</a>
+      <a href="#" class="btn btn-ice">View Our Services</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container footer-inner">
+    <a href="#" class="logo">
+      <span class="logo-prog">PROGRESSIVE</span><span class="logo-slash">/</span><span class="logo-edge">edge</span>
+    </a>
+    <span class="footer-copy">© 2026 Progressive Edge LLC &nbsp;·&nbsp; ai / technology / people</span>
+  </div>
+</footer>
