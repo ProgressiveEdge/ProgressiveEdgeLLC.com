@@ -767,12 +767,12 @@
           <legend class="form-section-title">Tell us what happened</legend>
           <div class="field-group" id="fg-subject">
             <label for="subject">Brief Summary <span class="req" aria-hidden="true">*</span></label>
-            <input type="text" id="subject" name="subject" required placeholder="Example: Outlook will not open" aria-required="true">
+            <input type="text" id="subject" name="subject" required placeholder="Example: Outlook will not open" aria-required="true" maxlength="500">
             <span class="field-error" id="err-subject">Please provide a brief summary.</span>
           </div>
           <div class="field-group" id="fg-description">
             <label for="description">Describe the Issue <span class="req" aria-hidden="true">*</span></label>
-            <textarea id="description" name="description" rows="7" required aria-required="true"></textarea>
+            <textarea id="description" name="description" rows="7" required aria-required="true" maxlength="8000"></textarea>
             <p class="help-text">Tell us what you were trying to do, what happened, and include any error messages you received.</p>
             <span class="field-error" id="err-description">Please describe the issue.</span>
           </div>
@@ -792,7 +792,7 @@
           </div>
           <div class="field-group">
             <label for="troubleshooting_attempted">What have you already tried?</label>
-            <textarea id="troubleshooting_attempted" name="troubleshooting_attempted" rows="4" placeholder="Example: Restarted the computer and reopened Outlook."></textarea>
+            <textarea id="troubleshooting_attempted" name="troubleshooting_attempted" rows="4" placeholder="Example: Restarted the computer and reopened Outlook." maxlength="8000"></textarea>
           </div>
         </fieldset>
 
