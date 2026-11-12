@@ -1,0 +1,16 @@
+---
+import type { Step } from '../data/services';
+
+interface Props {
+  steps: Step[];
+}
+const { steps } = Astro.props;
+---
+<ol class="steps">
+  {steps.map((step) => (
+    <li class="step" data-reveal>
+      <h3>{step.title}</h3>
+      <p>{step.text}</p>
+    </li>
+  ))}
+</ol>

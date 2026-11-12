@@ -1,0 +1,21 @@
+---
+import type { Service } from '../data/services';
+
+interface Props {
+  service: Service;
+  detailed?: boolean;
+}
+const { service, detailed = false } = Astro.props;
+const href = `/services/${service.slug}`;
+---
+<article class="service-card" data-reveal>
+  <p class="service-num" aria-hidden="true">{service.number}</p>
+  <h3 class="service-title"><a href={href}>{service.title}</a></h3>
+  <p>{service.summary}</p>
+  {detailed && (
+    <ul class="check-list">
+      {service.included.slice(0, 3).map((item) => <li>{item}</li>)}
+    </ul>
+  )}
+  <a class="service-link" href={href} aria-label={`Learn more about ${service.title}`}>Learn more</a>
+</article>

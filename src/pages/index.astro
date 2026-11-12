@@ -1,7 +1,60 @@
 ---
 import Base from '../layouts/Base.astro';
+import BookingLink from '../components/BookingLink.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import Steps from '../components/Steps.astro';
+import FounderCard from '../components/FounderCard.astro';
+import CtaBand from '../components/CtaBand.astro';
 import { site } from '../config/site';
+import { services } from '../data/services';
+import { team } from '../data/team';
+
+const howItWorks = [
+  { title: 'Talk', text: "Book a free call and tell us what's going on." },
+  { title: 'Plan', text: 'We come back with a clear recommendation and a quote.' },
+  { title: 'Support', text: 'We put it in place and stay with you.' },
+];
 ---
 <Base title="Technology That Works For People" description={site.description}>
-  <section class="section"><div class="container"><p class="lead">Home page arrives in Task 8.</p></div></section>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container">
+      <p class="eyebrow">{site.tagline}</p>
+      <h1 id="hero-title">Technology That Works For <em>People.</em></h1>
+      <p class="lead">{site.description}</p>
+      <div class="btn-row">
+        <BookingLink />
+        <a class="btn btn-ice" href="/services">Our Services</a>
+      </div>
+      <div class="scroll-hint" aria-hidden="true"><span class="scroll-track"></span>Scroll to explore</div>
+    </div>
+  </section>
+
+  <section class="section section-alt" aria-labelledby="services-title">
+    <div class="container">
+      <SectionHeading label="What We Do" title="Four services. One team you can reach." id="services-title" />
+      <div class="card-grid">
+        {services.map((service) => <ServiceCard service={service} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="how-title">
+    <div class="container">
+      <SectionHeading label="How It Works" title="Simple from the first call." id="how-title" />
+      <Steps steps={howItWorks} />
+    </div>
+  </section>
+
+  <section class="section section-alt" aria-labelledby="founders-title">
+    <div class="container">
+      <SectionHeading label="Meet the Founders" title="The people you'll work with." id="founders-title" />
+      <div class="founder-grid">
+        {team.map((founder) => <FounderCard founder={founder} variant="compact" />)}
+      </div>
+      <p class="more-link"><a href="/about">More about us</a></p>
+    </div>
+  </section>
+
+  <CtaBand />
 </Base>

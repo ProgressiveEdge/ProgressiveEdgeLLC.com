@@ -1,0 +1,17 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  accent?: string;
+  lead?: string;
+}
+const { eyebrow, title, accent, lead } = Astro.props;
+---
+<header class="page-header">
+  <div class="container">
+    <p class="eyebrow">{eyebrow}</p>
+    <h1>{title}{accent ? ' ' : ''}{accent && <em>{accent}</em>}</h1>
+    {lead && <p class="lead">{lead}</p>}
+    <slot />
+  </div>
+</header>
