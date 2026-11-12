@@ -1,0 +1,203 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { site } from '../config/site';
+import {
+  ALLOWED_EXTENSIONS,
+  CONTACT_METHODS,
+  MAX_FILES,
+  PRIORITIES,
+  SUPPORT_CATEGORIES,
+  USERS_AFFECTED,
+} from '../../functions/_lib/validate';
+
+const PRIORITY_TEXT: Record<(typeof PRIORITIES)[number], string> = {
+  Critical: 'Business operations are stopped or multiple people cannot work.',
+  High: 'A significant impact with little or no workaround.',
+  Normal: 'The issue is affecting work, but you can keep working.',
+  Low: 'A general request, question, or non-urgent issue.',
+};
+const accept = ALLOWED_EXTENSIONS.map((ext) => `.${ext}`).join(',');
+---
+<Base
+  title="Request Support"
+  description={`Send a support request to the ${site.name} help desk. For anything urgent, call ${site.phone.display}.`}
+>
+  <Fragment slot="head">
+    <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  </Fragment>
+
+  <PageHeader
+    eyebrow="Support"
+    title="How can we"
+    accent="help?"
+    lead="Tell us what's happening and our team will review your request. The more detail you give us, the faster we can fix it."
+  >
+    <p class="note">For anything urgent, call <a href={site.phone.href}>{site.phone.display}</a>.</p>
+  </PageHeader>
+
+  <section class="section section-alt">
+    <div class="container form-wrap">
+      <div class="form-banner" role="alert" data-form-error hidden>
+        <strong>We couldn't submit your request.</strong>
+        Please check the form and try again, or call <a href={site.phone.href}>{site.phone.display}</a> or email
+        <a href={`mailto:${site.email}`}>{site.email}</a>.
+      </div>
+
+      <form data-support-form novalidate aria-label="Support request">
+        <fieldset class="form-section">
+          <legend>Your information</legend>
+          <div class="field-row">
+            <div class="field" data-field="name">
+              <label for="name">Name<span class="req" aria-hidden="true">*</span></label>
+              <input id="name" name="name" type="text" required maxlength="200" autocomplete="name" aria-describedby="err-name" />
+              <p class="field-error" id="err-name" data-message="Please enter your name."></p>
+            </div>
+            <div class="field" data-field="company">
+              <label for="company">Company or organization</label>
+              <input id="company" name="company" type="text" maxlength="200" autocomplete="organization" aria-describedby="err-company" />
+              <p class="field-error" id="err-company" data-message="Please keep this under 200 characters."></p>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field" data-field="email">
+              <label for="email">Email<span class="req" aria-hidden="true">*</span></label>
+              <input id="email" name="email" type="email" required maxlength="254" autocomplete="email" aria-describedby="err-email" />
+              <p class="field-error" id="err-email" data-message="Please enter a valid email address."></p>
+            </div>
+            <div class="field" data-field="phone">
+              <label for="phone">Phone</label>
+              <input id="phone" name="phone" type="tel" maxlength="50" autocomplete="tel" aria-describedby="err-phone" />
+              <p class="field-error" id="err-phone" data-message="Please keep this under 50 characters."></p>
+            </div>
+          </div>
+          <fieldset class="field choice-group" data-field="preferred_contact_method" aria-describedby="err-preferred_contact_method">
+            <legend class="label">Preferred contact method<span class="req" aria-hidden="true">*</span></legend>
+            <div class="radio-row">
+              {CONTACT_METHODS.map((method, index) => (
+                <label class="radio"><input type="radio" name="preferred_contact_method" value={method} checked={index === 0} />{method}</label>
+              ))}
+            </div>
+            <p class="field-error" id="err-preferred_contact_method" data-message="Please choose how we should contact you."></p>
+          </fieldset>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <legend>What can we help with?</legend>
+          <div class="field" data-field="category">
+            <label for="category">Type of request<span class="req" aria-hidden="true">*</span></label>
+            <div class="select-wrap">
+              <select id="category" name="category" required aria-describedby="err-category">
+                <option value="" selected disabled>Select the type of issue</option>
+                {SUPPORT_CATEGORIES.map((category) => <option value={category}>{category}</option>)}
+              </select>
+            </div>
+            <p class="field-error" id="err-category" data-message="Please choose the type of issue."></p>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-section" data-field="priority" aria-describedby="err-priority">
+          <legend>How urgent is this?</legend>
+          <p class="form-section-desc">Choose the option that best describes the impact.</p>
+          <div class="priority-grid">
+            {PRIORITIES.map((priority) => (
+              <label class="priority-card" data-priority={priority}>
+                <input type="radio" name="priority" value={priority} checked={priority === 'Normal'} />
+                <span class="priority-card-inner">
+                  <span class="priority-card-title">{priority}</span>
+                  <span class="priority-card-desc">{PRIORITY_TEXT[priority]}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+          <p class="field-error" id="err-priority" data-message="Please choose a priority."></p>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <legend>Tell us what happened</legend>
+          <div class="field" data-field="subject">
+            <label for="subject">Brief summary<span class="req" aria-hidden="true">*</span></label>
+            <input id="subject" name="subject" type="text" required maxlength="500" placeholder="Example: Outlook will not open" aria-describedby="err-subject" />
+            <p class="field-error" id="err-subject" data-message="Please give a brief summary (up to 500 characters)."></p>
+          </div>
+          <div class="field" data-field="description">
+            <label for="description">Describe the issue<span class="req" aria-hidden="true">*</span></label>
+            <textarea id="description" name="description" rows="7" required maxlength="8000" aria-describedby="description-help err-description"></textarea>
+            <p class="help" id="description-help">What were you trying to do, what happened, and what did any error message say?</p>
+            <p class="field-error" id="err-description" data-message="Please describe the issue."></p>
+          </div>
+          <div class="field" data-field="issue_started">
+            <label for="issue_started">When did the issue begin?</label>
+            <input id="issue_started" name="issue_started" type="text" maxlength="200" placeholder="Example: This morning around 8:30" aria-describedby="err-issue_started" />
+            <p class="field-error" id="err-issue_started" data-message="Please keep this under 200 characters."></p>
+          </div>
+          <fieldset class="field choice-group" data-field="users_affected" aria-describedby="err-users_affected">
+            <legend class="label">Who is affected?<span class="req" aria-hidden="true">*</span></legend>
+            <div class="radio-row">
+              {USERS_AFFECTED.map((option, index) => (
+                <label class="radio"><input type="radio" name="users_affected" value={option} checked={index === 0} />{option}</label>
+              ))}
+            </div>
+            <p class="field-error" id="err-users_affected" data-message="Please tell us who is affected."></p>
+          </fieldset>
+          <div class="field" data-field="troubleshooting_attempted">
+            <label for="troubleshooting_attempted">What have you already tried?</label>
+            <textarea id="troubleshooting_attempted" name="troubleshooting_attempted" rows="4" maxlength="8000" placeholder="Example: Restarted the computer and reopened Outlook." aria-describedby="err-troubleshooting_attempted"></textarea>
+            <p class="field-error" id="err-troubleshooting_attempted" data-message="Please keep this under 8,000 characters."></p>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-section" data-field="attachments">
+          <legend>Screenshots and attachments</legend>
+          <p class="form-section-desc">Screenshots and error messages help us diagnose the issue faster.</p>
+          <div class="file-drop" role="button" tabindex="0" data-file-drop data-focus aria-labelledby="file-drop-label" aria-describedby="file-hint err-attachments">
+            <input type="file" id="attachments" name="attachments" multiple accept={accept} hidden data-file-input />
+            <span class="file-drop-label" id="file-drop-label">Choose files or drag and drop</span>
+            <span class="file-drop-hint" id="file-hint">PNG, JPG, GIF, WebP, PDF, text, Word or Excel. Up to {MAX_FILES} files, 10 MB each, 20 MB in total.</span>
+          </div>
+          <ul class="file-list" data-file-list aria-live="polite"></ul>
+          <p class="file-skipped" data-file-skipped aria-live="polite" hidden></p>
+          <p class="field-error" id="err-attachments" data-message="Please remove files that are too large or of an unsupported type."></p>
+          <p class="notice">Please don't upload passwords, authentication codes, credit card numbers, Social Security numbers or other sensitive information.</p>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <legend>Contact and remote support</legend>
+          <div class="field" data-field="best_contact_time">
+            <label for="best_contact_time">Best time to contact you</label>
+            <input id="best_contact_time" name="best_contact_time" type="text" maxlength="200" placeholder="Example: Weekdays after 2 PM" aria-describedby="err-best_contact_time" />
+            <p class="field-error" id="err-best_contact_time" data-message="Please keep this under 200 characters."></p>
+          </div>
+          <div class="field" data-field="remote_support_permission">
+            <label class="checkbox">
+              <input type="checkbox" id="remote_support_permission" name="remote_support_permission" value="yes" />
+              <span>{site.name} may contact me to start a remote support session if remote troubleshooting is needed.</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="honeypot" aria-hidden="true">
+          <label for="website">Leave this field empty</label>
+          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+        <div class="cf-turnstile turnstile" data-sitekey={site.turnstileSiteKey} data-theme="dark"></div>
+        <button class="btn btn-copper btn-block" type="submit">Submit Support Request</button>
+      </form>
+
+      <div class="form-success" data-form-success tabindex="-1" hidden>
+        <p class="success-mark" aria-hidden="true">✓</p>
+        <h2>Your support request has been received.</h2>
+        <p>Our team will review it and contact you using your preferred contact method.</p>
+        <p data-ticket-line hidden>Your ticket number is<span class="ticket-badge" data-ticket-number></span></p>
+        <div class="btn-row btn-row--center">
+          <button type="button" class="btn btn-ice" data-submit-another>Submit another request</button>
+          <a class="btn btn-copper" href="/">Return home</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    import '../scripts/support-form';
+  </script>
+</Base>
