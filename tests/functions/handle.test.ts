@@ -1,7 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { handleSubmission, type Env } from '../../functions/_lib/handle';
-import { onRequest as contactEndpoint } from '../../functions/api/contact';
-import { onRequest as supportEndpoint } from '../../functions/api/support';
 import { fakeFetch } from '../helpers';
 
 const ENV: Env = {
@@ -152,16 +150,5 @@ describe('handleSubmission', () => {
       status: 502,
       body: { error: 'upstream' },
     });
-  });
-});
-
-describe('endpoints', () => {
-  it('wires /api/contact to the handler', async () => {
-    const res = await contactEndpoint({ request: new Request('https://getproedge.org/api/contact'), env: ENV });
-    expect(res.status).toBe(405);
-  });
-  it('wires /api/support to the handler', async () => {
-    const res = await supportEndpoint({ request: new Request('https://getproedge.org/api/support'), env: ENV });
-    expect(res.status).toBe(405);
   });
 });

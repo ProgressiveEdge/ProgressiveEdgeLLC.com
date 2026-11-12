@@ -2,39 +2,42 @@
 
 Do these once. Step 1 must be done **before the `feature/getproedge-site` branch is first pushed**.
 
-## 1. Cloudflare Pages build settings
+The site runs on the existing Cloudflare **Worker** `progressiveedgellc-com` (Workers & Pages). `wrangler.jsonc` in the repo tells it to serve the built site from `dist/` and to run `worker/index.ts` for the two form endpoints.
 
-Cloudflare dashboard → Workers & Pages → the project that deploys `ProgressiveEdge/ProgressiveEdgeLLC.com` → Settings.
+## 1. Worker build settings and secrets
 
-Build:
-- Framework preset: **Astro**
+Cloudflare dashboard → Workers & Pages → `progressiveedgellc-com` → Settings.
+
+**Builds** (Settings → Builds → Build configuration):
 - Build command: `npm run build`
-- Build output directory: `dist`
+- Deploy command: `npx wrangler deploy` (leave as is)
+- Non-production branch deploy command: `npx wrangler versions upload` (leave as is; this builds a preview of other branches)
+- Root directory: leave as the repository root
+- Build variables: add `NODE_VERSION` = `24`
 
-Variables and Secrets — add each to **both Production and Preview**:
+**Variables and Secrets** (Settings → Variables and Secrets) — add each as type **Secret**:
 
-| Name | Type | Value |
-|---|---|---|
-| `NODE_VERSION` | Text | `24` |
-| `TURNSTILE_SECRET_KEY` | Secret | from step 2 (add it once step 2 is done) |
-| `N8N_CONTACT_WEBHOOK_URL` | Text | `https://n8n.getproedge.org/webhook/website-contact` |
-| `N8N_SUPPORT_WEBHOOK_URL` | Text | `https://n8n.getproedge.org/webhook/website-support` |
-| `N8N_WEBHOOK_SECRET` | Secret | a long random value — in Git Bash: `openssl rand -hex 32`. Keep it for step 5. |
+| Name | Value |
+|---|---|
+| `N8N_WEBHOOK_SECRET` | a long random value — in Git Bash: `openssl rand -hex 32`. Keep it for step 5. |
+| `TURNSTILE_SECRET_KEY` | from step 2 (add it once step 2 is done) |
 
-After this change a push to `main` fails to build until the branch is merged. Production keeps serving the last good deployment, so the current site stays up.
+The two n8n webhook URLs are not secret and already live in `wrangler.jsonc`; don't add them here. Every deploy replaces the Worker's plain-text variables with the ones in `wrangler.jsonc`; secrets are kept.
 
-Also check Settings → Runtime (or Functions) → **Compatibility date** is 2021-11-03 or later (any recent date is fine). Older dates make uploaded files arrive as text, and support attachments would be dropped.
+**Preview URLs** (Settings → Domains & Routes): make sure **workers.dev** and **Preview URLs** are enabled, so a push to `feature/getproedge-site` gets its own test address. The branch's build log prints that address.
+
+Once the build command is set, a push to `main` fails to build until this branch is merged, because the old `main` has no `package.json`. Production keeps serving the current site.
 
 ## 2. Cloudflare Turnstile
 
 Cloudflare dashboard → Turnstile → Add widget.
 - Name: `getproedge.org forms`
-- Hostnames: `getproedge.org` and your Pages project's `<project>.pages.dev`
+- Hostnames: `getproedge.org` and your account's `workers.dev` subdomain (for example `yourname.workers.dev`, shown on the Workers & Pages overview). Preview addresses are subdomains of it.
 - Widget mode: Managed
 
 Copy the keys:
 - **Site key** → `src/config/site.ts` → `turnstileSiteKey` (replace the test key `1x00000000000000000000AA`), then commit.
-- **Secret key** → Pages `TURNSTILE_SECRET_KEY`.
+- **Secret key** → the Worker secret `TURNSTILE_SECRET_KEY` (step 1).
 
 If a form on a preview address says verification failed, add that preview's full hostname to the widget.
 
@@ -63,7 +66,7 @@ Workflows → **Import from file**: `n8n/contact-to-zammad.json`, then `n8n/supp
 2. Open **Create Zammad ticket** → Credential: **Zammad API token**.
 3. Save, then **Publish / Activate**. Changes only take effect once published.
 
-The production webhook URLs must match step 1: `/webhook/website-contact` and `/webhook/website-support`.
+The production webhook URLs must match `wrangler.jsonc`: `/webhook/website-contact` and `/webhook/website-support`.
 
 ## 6. Mailbox
 
@@ -71,7 +74,7 @@ Create `info@getproedge.org` in the Microsoft 365 admin center, as a mailbox, sh
 
 ## 7. Go live (after the branch is merged to `main`)
 
-1. Pages project → Custom domains → add `getproedge.org` and `www.getproedge.org`.
+1. Worker → Settings → **Domains & Routes** → Add → **Custom domain**: `getproedge.org`, then again for `www.getproedge.org`. If Cloudflare says a DNS record already exists for one of these names, check what it is before replacing it, and never touch the `n8n`, `support`, `mesh`, `vault`, `auth` or voice records.
 2. **getproedge.org** zone → Rules → Redirect Rules → Create:
    - Name: `www to apex`
    - When: Hostname equals `www.getproedge.org`
@@ -81,13 +84,13 @@ Create `info@getproedge.org` in the Microsoft 365 admin center, as a mailbox, sh
    - When: (Hostname equals `progressiveedgellc.com`) **or** (Hostname equals `www.progressiveedgellc.com`)
    - Then: Dynamic redirect to `concat("https://getproedge.org", http.request.uri.path)`, status **301**, preserve query string.
 
-   Keep the existing proxied (orange-cloud) DNS records for those two names, so the rule can fire. Don't match any other progressiveedgellc.com hostname, such as voice, mesh or mail.
-4. Pages project → Metrics → **Web Analytics** → enable. It is cookieless.
+   Keep the Worker's existing custom domains (or proxied, orange-cloud DNS records) for those two names in place, so the rule can fire. Don't match any other progressiveedgellc.com hostname, such as voice, mesh or mail.
+4. Cloudflare dashboard → Analytics & Logs → **Web Analytics** → Add a site → `getproedge.org` → automatic setup. It is cookieless.
 5. If the launch date isn't November 12, 2026, update `effective` in `src/pages/privacy.astro`.
 
 ## Rollback
 
-Pages project → Deployments → the previous production deployment → ⋯ → **Rollback to this deployment**.
+Worker → **Deployments** → the previous version → **Rollback**.
 
 ## Known limits and open items
 

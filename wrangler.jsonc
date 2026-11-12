@@ -1,0 +1,21 @@
+// Cloudflare Worker "progressiveedgellc-com". It serves the built Astro site from dist/
+// and runs worker/index.ts for /api/contact and /api/support.
+// Secrets (TURNSTILE_SECRET_KEY, N8N_WEBHOOK_SECRET) are set in the Cloudflare dashboard, never here.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "progressiveedgellc-com",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page"
+  },
+  // workers.dev must stay on for branch preview URLs.
+  "workers_dev": true,
+  "preview_urls": true,
+  "vars": {
+    "N8N_CONTACT_WEBHOOK_URL": "https://n8n.getproedge.org/webhook/website-contact",
+    "N8N_SUPPORT_WEBHOOK_URL": "https://n8n.getproedge.org/webhook/website-support"
+  }
+}
