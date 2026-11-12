@@ -148,7 +148,7 @@ Short message, links to Home, Services and Contact.
 
 ## 6. Architecture
 
-Astro (current stable), static output, deployed on Cloudflare Pages; form handlers are Cloudflare Pages Functions in `functions/`.
+Astro (current stable), static output, deployed on the existing Cloudflare **Worker** `progressiveedgellc-com` (Workers Builds) with static assets from `dist/`. `worker/index.ts` routes `/api/contact` and `/api/support` to the form pipeline in `functions/_lib/`; every other request is served from the assets. (Changed 2026-11-12: the owner's project turned out to be a Worker, not a Pages project, and the owner chose to keep it.)
 
 ```
 pe-website/
@@ -171,12 +171,12 @@ pe-website/
     scripts/                nav.ts, reveal.ts, forms.ts, contact-form.ts, support-form.ts
     assets/team/            david.webp, stacey.webp (originals)
   public/                   icons/, og-image.png, robots.txt, _redirects
+  wrangler.jsonc            Worker config: name, static assets (dist/, 404 page), webhook URL vars
+  worker/index.ts           Worker entry: /api/contact, /api/support → handle.ts; else static assets
   functions/
-    api/contact.ts          POST handler
-    api/support.ts          POST handler
     _lib/                   validate.ts (shared with the browser), turnstile.ts,
                             forward.ts, handle.ts (request pipeline)
-  tests/                    Vitest unit tests (kept out of functions/ so Pages never bundles them)
+  tests/                    Vitest unit tests
   scripts/                  check-dist.mjs (links, URL style, banned strings), og/ (og-image template)
   n8n/                      contact-to-zammad.json, support-to-zammad.json (importable)
   docs/setup.md             owner setup steps (Section 9)
@@ -189,9 +189,9 @@ The old `index.html`, `support/request.html` and `CNAME` are removed from the re
 ## 7. Forms and integrations
 
 ### Flow
-Browser → `POST /api/contact` or `/api/support` (Pages Function) → n8n webhook (public path; n8n UI stays behind the Entra gate) → Zammad REST API on the server's internal network → response back to the browser. The Entra gate on `support.getproedge.org` is not changed. `portal.getproedge.org` is not used (reserved for a future payment portal).
+Browser → `POST /api/contact` or `/api/support` (Worker) → n8n webhook (public path; n8n UI stays behind the Entra gate) → Zammad REST API on the server's internal network → response back to the browser. The Entra gate on `support.getproedge.org` is not changed. `portal.getproedge.org` is not used (reserved for a future payment portal).
 
-### Pages Function behaviour (both endpoints)
+### Form endpoint behaviour (both endpoints)
 1. Reject non-POST (405) and bodies over 25 MB (413).
 2. Honeypot field `website` non-empty → respond `200 {ok:true}` and drop silently.
 3. A required secret or webhook URL is missing → `500 {error:"config"}`.
@@ -217,27 +217,27 @@ The Zammad base URL used inside n8n is the internal Docker address from `pe-infr
 ### Browser behaviour
 Submit button disables while sending. Success: contact form is replaced by a thank-you message with the reply promise; support form shows the ticket number. Failure: error banner with phone and email; entered data is kept. Client-side validation mirrors the server's.
 
-### Secrets (Cloudflare Pages environment variables, encrypted)
-`TURNSTILE_SECRET_KEY`, `N8N_CONTACT_WEBHOOK_URL`, `N8N_SUPPORT_WEBHOOK_URL`, `N8N_WEBHOOK_SECRET`. Turnstile site key is public and lives in `site.ts`.
+### Secrets and settings
+Worker secrets (dashboard, encrypted): `TURNSTILE_SECRET_KEY`, `N8N_WEBHOOK_SECRET`. The webhook URLs `N8N_CONTACT_WEBHOOK_URL` and `N8N_SUPPORT_WEBHOOK_URL` are not secret and live in `wrangler.jsonc` `vars`. Turnstile site key is public and lives in `site.ts`.
 
 ## 8. Search and metadata
 
-Per page: unique `<title>` and meta description, canonical URL on `https://getproedge.org`, Open Graph and Twitter card tags using `og-image.png`. Site-wide: `sitemap-index.xml`, `robots.txt` pointing to it, JSON-LD `ProfessionalService` (name Get Pro Edge, legalName Progressive Edge LLC, url, logo, telephone, email, address locality Auburn, region MI, country US). Cloudflare Web Analytics (cookieless) enabled in the Pages dashboard — no script in the repo.
+Per page: unique `<title>` and meta description, canonical URL on `https://getproedge.org`, Open Graph and Twitter card tags using `og-image.png`. Site-wide: `sitemap-index.xml`, `robots.txt` pointing to it, JSON-LD `ProfessionalService` (name Get Pro Edge, legalName Progressive Edge LLC, url, logo, telephone, email, address locality Auburn, region MI, country US). Cloudflare Web Analytics (cookieless) enabled in the dashboard with automatic setup — no script in the repo.
 
 ## 9. Deployment
 
-1. Build on `feature/getproedge-site`. Before its first push, the owner switches the Pages project's build settings to framework **Astro**, build command `npm run build`, output `dist`, env `NODE_VERSION=24`, and adds the four secrets (Preview and Production). From then until the merge, a push to `main` fails to build and production keeps serving the last good deployment, so the current site stays up.
-2. Push the branch → Cloudflare builds a preview at the branch's `*.pages.dev` address. All testing (Section 10) happens there.
+1. Build on `feature/getproedge-site`. Before its first push, the owner sets the Worker's build command to `npm run build` (deploy command stays `npx wrangler deploy`), adds the build variable `NODE_VERSION=24`, adds the two Worker secrets, and makes sure workers.dev preview URLs are on. From then until the merge, a push to `main` fails to build and production keeps serving the last good deployment, so the current site stays up.
+2. Push the branch → Workers Builds uploads a preview version at a `*.workers.dev` preview address. All testing (Section 10) happens there.
 3. Owner setup, documented step by step in `docs/setup.md`:
    - Microsoft Bookings page created; URL put in `site.ts`.
-   - Turnstile widget created for `getproedge.org` and the `*.pages.dev` preview host; keys added.
+   - Turnstile widget created for `getproedge.org` and the account's `workers.dev` subdomain (preview host); keys added.
    - Zammad: **Sales** group created; API token with `ticket.agent` on Sales and Support groups.
    - n8n: both workflows imported; Header Auth and Zammad credentials set; workflows activated.
    - `info@getproedge.org` exists as a mailbox or alias in Microsoft 365 (domain mail already routes to Microsoft 365).
 4. Merge to `main` → production deploy.
-5. Domains: add `getproedge.org` and `www.getproedge.org` as Pages custom domains; Cloudflare Redirect Rule in the getproedge.org zone sends `www` → apex (301, path and query kept).
+5. Domains: add `getproedge.org` and `www.getproedge.org` as Worker custom domains; Cloudflare Redirect Rule in the getproedge.org zone sends `www` → apex (301, path and query kept).
 6. Redirect Rule in the progressiveedgellc.com zone: hostname equals `progressiveedgellc.com` or `www.progressiveedgellc.com` → `https://getproedge.org` + same path (301, query kept). The existing proxied record stays so the rule can fire. Other progressiveedgellc.com hostnames (voice, mesh, mail) are not matched.
-7. Rollback: Cloudflare Pages "Rollback to this deployment" on the previous production deployment.
+7. Rollback: Worker → Deployments → previous version → Rollback.
 
 Commits use the repo-local Progressive Edge identity.
 
