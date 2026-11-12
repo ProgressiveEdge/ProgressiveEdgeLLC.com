@@ -79,6 +79,6 @@
       ]
     }
   },
-  "settings": { "executionOrder": "v1" },
+  "settings": { "executionOrder": "v1", "saveDataSuccessExecution": "none" },
   "pinData": {}
 }

@@ -10,6 +10,7 @@ interface N8nNode {
 interface Workflow {
   nodes: N8nNode[];
   connections: Record<string, { main: { node: string }[][] }>;
+  settings: Record<string, unknown>;
 }
 interface Item {
   json: { body: Record<string, string> };
@@ -148,6 +149,10 @@ describe.each([
 ])('%s wiring', (file, path) => {
   const wf = load(file);
   const hook = wf.nodes.find((n) => n.type === 'n8n-nodes-base.webhook');
+
+  it('does not keep successful executions (form bodies and attachments)', () => {
+    expect(wf.settings.saveDataSuccessExecution).toBe('none');
+  });
 
   it('listens on the right path with header auth and a response node', () => {
     expect(hook?.parameters).toMatchObject({

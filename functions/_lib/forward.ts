@@ -2,7 +2,8 @@ export type ForwardResult = { ok: true; data: Record<string, unknown> } | { ok: 
 
 /**
  * POSTs a form to an n8n webhook as multipart/form-data with the shared-secret header.
- * Never throws: a network error, timeout or non-2xx answer is { ok: false }.
+ * Success is a 2xx answer whose JSON body has ok === true. Anything else (redirect, non-JSON,
+ * other JSON, non-2xx, network error, timeout) is { ok: false }. Never throws.
  */
 export async function forwardToN8n(
   url: string,
@@ -16,11 +17,13 @@ export async function forwardToN8n(
       method: 'POST',
       headers: { 'X-PE-Webhook-Secret': secret },
       body,
+      redirect: 'manual',
       signal: AbortSignal.timeout(timeoutMs),
     });
     if (!res.ok) return { ok: false };
-    const data: unknown = await res.json().catch(() => ({}));
-    return { ok: true, data: data !== null && typeof data === 'object' ? (data as Record<string, unknown>) : {} };
+    const data: unknown = await res.json().catch(() => null);
+    if (data === null || typeof data !== 'object' || (data as Record<string, unknown>).ok !== true) return { ok: false };
+    return { ok: true, data: data as Record<string, unknown> };
   } catch {
     return { ok: false };
   }

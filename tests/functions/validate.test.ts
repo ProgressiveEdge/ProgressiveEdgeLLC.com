@@ -6,6 +6,7 @@ import {
   attachedFiles,
   extensionOf,
   MAX_FILE_BYTES,
+  MAX_TOTAL_BYTES,
 } from '../../functions/_lib/validate';
 
 const contact = (overrides: Record<string, string> = {}) => ({
@@ -100,6 +101,19 @@ describe('validateSupport', () => {
   it('rejects a file over 10 MB', () => {
     expect(validateSupport(support(), [file('big.png', MAX_FILE_BYTES + 1)])).toEqual(['attachments']);
   });
+  it('accepts a file of exactly the per-file limit', () => {
+    expect(validateSupport(support(), [file('edge.png', MAX_FILE_BYTES)])).toEqual([]);
+  });
+  it('accepts exactly 20 MB in total', () => {
+    const tenMb = 10 * 1024 * 1024;
+    expect(tenMb * 2).toBe(MAX_TOTAL_BYTES);
+    expect(validateSupport(support(), [file('a.png', tenMb), file('b.png', tenMb)])).toEqual([]);
+  });
+  it('accepts an email of exactly 254 characters', () => {
+    const email = 'a'.repeat(242) + '@example.com';
+    expect(email).toHaveLength(254);
+    expect(validateContact(contact({ email }))).toEqual([]);
+  });
   it('rejects more than 20 MB in total', () => {
     const eightMb = 8 * 1024 * 1024;
     expect(validateSupport(support(), [file('a.png', eightMb), file('b.png', eightMb), file('c.png', eightMb)])).toEqual(['attachments']);
@@ -112,6 +126,11 @@ describe('form helpers', () => {
     form.append('name', '  Pat  ');
     form.append('extra', 'ignored');
     expect(textFields(form, ['name', 'email'])).toEqual({ name: 'Pat', email: '' });
+  });
+  it('normalises line endings to LF', () => {
+    const form = new FormData();
+    form.append('message', 'a\r\nb\rc');
+    expect(textFields(form, ['message'])).toEqual({ message: 'a\nb\nc' });
   });
   it('returns only non-empty attached files', () => {
     const form = new FormData();

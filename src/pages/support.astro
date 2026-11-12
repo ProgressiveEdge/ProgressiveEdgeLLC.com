@@ -38,13 +38,14 @@ const accept = ALLOWED_EXTENSIONS.map((ext) => `.${ext}`).join(',');
 
   <section class="section section-alt">
     <div class="container form-wrap">
-      <div class="form-banner" role="alert" data-form-error hidden>
+      <div class="form-banner" role="alert" tabindex="-1" data-form-error hidden>
         <strong>We couldn't submit your request.</strong>
         Please check the form and try again, or call <a href={site.phone.href}>{site.phone.display}</a> or email
         <a href={`mailto:${site.email}`}>{site.email}</a>.
       </div>
 
-      <form data-support-form novalidate aria-label="Support request">
+      <noscript><p class="notice">This form needs JavaScript. Please call <a href={site.phone.href}>{site.phone.display}</a> or email <a href={`mailto:${site.email}`}>{site.email}</a>.</p></noscript>
+      <form data-support-form method="post" action="/api/support" enctype="multipart/form-data" novalidate aria-label="Support request">
         <fieldset class="form-section">
           <legend>Your information</legend>
           <div class="field-row">
@@ -188,7 +189,7 @@ const accept = ALLOWED_EXTENSIONS.map((ext) => `.${ext}`).join(',');
         <p class="success-mark" aria-hidden="true">✓</p>
         <h2>Your support request has been received.</h2>
         <p>Our team will review it and contact you using your preferred contact method.</p>
-        <p data-ticket-line hidden>Your ticket number is<span class="ticket-badge" data-ticket-number></span></p>
+        <p data-ticket-line hidden>Your ticket number is <span class="ticket-badge" data-ticket-number></span></p>
         <div class="btn-row btn-row--center">
           <button type="button" class="btn btn-ice" data-submit-another>Submit another request</button>
           <a class="btn btn-copper" href="/">Return home</a>

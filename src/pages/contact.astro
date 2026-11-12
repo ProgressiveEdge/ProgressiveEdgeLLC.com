@@ -22,13 +22,14 @@ import { CONTACT_SERVICES } from '../../functions/_lib/validate';
     <div class="container contact-layout">
       <div>
         <h2 class="section-title" id="message-title">Send a message</h2>
-        <div class="form-banner" role="alert" data-form-error hidden>
+        <div class="form-banner" role="alert" tabindex="-1" data-form-error hidden>
           <strong>We couldn't send your message.</strong>
           Please check the form and try again, or call <a href={site.phone.href}>{site.phone.display}</a> or email
           <a href={`mailto:${site.email}`}>{site.email}</a>.
         </div>
 
-        <form class="form-card" data-contact-form novalidate aria-labelledby="message-title">
+        <noscript><p class="notice">This form needs JavaScript. Please call <a href={site.phone.href}>{site.phone.display}</a> or email <a href={`mailto:${site.email}`}>{site.email}</a>.</p></noscript>
+        <form class="form-card" data-contact-form method="post" action="/api/contact" novalidate aria-labelledby="message-title">
           <div class="field-row">
             <div class="field" data-field="name">
               <label for="name">Name<span class="req" aria-hidden="true">*</span></label>

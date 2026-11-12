@@ -14,6 +14,7 @@ describe('forwardToN8n', () => {
     expect(f.calls[0].init.method).toBe('POST');
     expect(new Headers(f.calls[0].init.headers).get('X-PE-Webhook-Secret')).toBe('hook-secret');
     expect(f.calls[0].init.body).toBe(body);
+    expect(f.calls[0].init.redirect).toBe('manual');
   });
 
   it('returns the JSON answer on success', async () => {
@@ -24,9 +25,19 @@ describe('forwardToN8n', () => {
     });
   });
 
-  it('treats a non-JSON success as ok with no data', async () => {
+  it('fails on a non-JSON 2xx answer', async () => {
     const f = fakeFetch(() => new Response('Workflow was started'));
-    expect(await forwardToN8n(URL_, 's', new FormData(), f.impl)).toEqual({ ok: true, data: {} });
+    expect(await forwardToN8n(URL_, 's', new FormData(), f.impl)).toEqual({ ok: false });
+  });
+
+  it('fails on a 2xx JSON answer without ok: true', async () => {
+    const f = fakeFetch(() => Response.json({ received: true }));
+    expect(await forwardToN8n(URL_, 's', new FormData(), f.impl)).toEqual({ ok: false });
+  });
+
+  it('fails on a redirect', async () => {
+    const f = fakeFetch(() => new Response(null, { status: 302, headers: { Location: 'https://elsewhere.test/' } }));
+    expect(await forwardToN8n(URL_, 's', new FormData(), f.impl)).toEqual({ ok: false });
   });
 
   it('fails on a non-2xx answer', async () => {

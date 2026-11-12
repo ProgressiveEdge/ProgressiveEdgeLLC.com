@@ -120,7 +120,7 @@ export function textFields(form: FormData, names: readonly string[]): Fields {
   const fields: Fields = {};
   for (const name of names) {
     const value = form.get(name);
-    fields[name] = typeof value === 'string' ? value.trim() : '';
+    fields[name] = typeof value === 'string' ? value.replace(/\r\n?/g, '\n').trim() : '';
   }
   return fields;
 }

@@ -136,12 +136,11 @@ if (form && banner && success && ticketLine && ticketNumber && another && drop &
       return;
     }
 
-    const fields = result.data.fields;
-    if (result.data.error === 'validation' && Array.isArray(fields)) {
-      showFieldErrors(form, fields as string[]);
-    }
     banner.hidden = false;
-    banner.scrollIntoView({ block: 'nearest' });
+    const fields = result.data.fields;
+    const firstServerInvalid = result.data.error === 'validation' && Array.isArray(fields) ? showFieldErrors(form, fields as string[]) : null;
+    if (firstServerInvalid) firstServerInvalid.focus();
+    else banner.focus();
     resetTurnstile(form);
     setSending(false);
   });

@@ -16,12 +16,14 @@ Variables and Secrets — add each to **both Production and Preview**:
 | Name | Type | Value |
 |---|---|---|
 | `NODE_VERSION` | Text | `24` |
-| `TURNSTILE_SECRET_KEY` | Secret | from step 2 |
+| `TURNSTILE_SECRET_KEY` | Secret | from step 2 (add it once step 2 is done) |
 | `N8N_CONTACT_WEBHOOK_URL` | Text | `https://n8n.getproedge.org/webhook/website-contact` |
 | `N8N_SUPPORT_WEBHOOK_URL` | Text | `https://n8n.getproedge.org/webhook/website-support` |
 | `N8N_WEBHOOK_SECRET` | Secret | a long random value — in Git Bash: `openssl rand -hex 32`. Keep it for step 5. |
 
 After this change a push to `main` fails to build until the branch is merged. Production keeps serving the last good deployment, so the current site stays up.
+
+Also check Settings → Runtime (or Functions) → **Compatibility date** is 2021-11-03 or later (any recent date is fine). Older dates make uploaded files arrive as text, and support attachments would be dropped.
 
 ## 2. Cloudflare Turnstile
 
