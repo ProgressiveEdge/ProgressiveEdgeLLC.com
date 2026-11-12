@@ -153,26 +153,31 @@ Astro (current stable), static output, deployed on Cloudflare Pages; form handle
 ```
 pe-website/
   astro.config.mjs          site: https://getproedge.org, sitemap integration
-  package.json, .nvmrc      Node 22 for Cloudflare builds
+  package.json, .nvmrc      Node 24 for Cloudflare builds (Astro 7 needs ≥ 22.23)
   src/
     config/site.ts          name, endorsement, legal name, phone, email, booking URL,
                             reply promise, location, Turnstile site key
     data/services.ts        the four services (slug, title, promise, summary,
                             included[], whoFor[], steps[], faqs[])
     data/team.ts            co-founders (name, title, bio, summary, photo)
+    data/values.ts          the four values (About page)
+    lib/paths.ts            cleans Astro.url.pathname (build output ends in .html)
     styles/site.css         tokens + base + shared component styles
     layouts/Base.astro      <head> meta/OG/JSON-LD, skip link, Nav, Footer, reveal script
-    components/             Nav, Footer, Wordmark, PageHeader, SectionHeading,
+    components/             Nav, Footer, Wordmark, BookingLink, PageHeader, SectionHeading,
                             ServiceCard, Steps, FounderCard, Faq, ContactMethods, CtaBand
     pages/                  index, about, contact, support, privacy, 404,
                             services/index, services/[slug]
-    scripts/                nav.ts, reveal.ts, contact-form.ts, support-form.ts
+    scripts/                nav.ts, reveal.ts, forms.ts, contact-form.ts, support-form.ts
     assets/team/            david.webp, stacey.webp (originals)
-  public/                   favicons, og-image.png, robots.txt, _redirects
+  public/                   icons/, og-image.png, robots.txt, _redirects
   functions/
     api/contact.ts          POST handler
     api/support.ts          POST handler
-    _lib/                   turnstile.ts, validate.ts, forward.ts (shared, unit-tested)
+    _lib/                   validate.ts (shared with the browser), turnstile.ts,
+                            forward.ts, handle.ts (request pipeline)
+  tests/                    Vitest unit tests (kept out of functions/ so Pages never bundles them)
+  scripts/                  check-dist.mjs (links, URL style, banned strings), og/ (og-image template)
   n8n/                      contact-to-zammad.json, support-to-zammad.json (importable)
   docs/setup.md             owner setup steps (Section 9)
 ```
@@ -189,11 +194,12 @@ Browser → `POST /api/contact` or `/api/support` (Pages Function) → n8n webho
 ### Pages Function behaviour (both endpoints)
 1. Reject non-POST (405) and bodies over 25 MB (413).
 2. Honeypot field `website` non-empty → respond `200 {ok:true}` and drop silently.
-3. Verify Turnstile token with `challenges.cloudflare.com/turnstile/v0/siteverify` (secret + client IP); failure → `400 {error:"verification"}`.
-4. Validate fields (below); failure → `400 {error:"validation", fields:[...]}`.
-5. Forward JSON to the n8n webhook URL with header `X-PE-Webhook-Secret`, 20-second timeout. Attachments are sent base64-encoded with filename and MIME type.
-6. n8n success → `200 {ok:true}` (contact) or `200 {ok:true, ticketNumber}` (support). Timeout or non-2xx → `502 {error:"upstream"}`.
-7. Never log message bodies or attachments.
+3. A required secret or webhook URL is missing → `500 {error:"config"}`.
+4. Verify Turnstile token with `challenges.cloudflare.com/turnstile/v0/siteverify` (secret + client IP); failure → `400 {error:"verification"}`.
+5. Validate fields (below); failure → `400 {error:"validation", fields:[...]}`.
+6. Forward to the n8n webhook URL as `multipart/form-data` with header `X-PE-Webhook-Secret`, 20-second timeout. Text fields keep their names; files are sent as `attachment_1` … `attachment_5` with their original filename and type. (Multipart, not JSON with base64: n8n's default JSON body limit is 16 MB, which a 20 MB attachment set would exceed once base64-encoded, and multipart keeps base64 work out of the Worker's CPU budget. n8n base64-encodes the files for Zammad.)
+7. n8n success → `200 {ok:true}` (contact) or `200 {ok:true, ticketNumber}` (support). Timeout or non-2xx → `502 {error:"upstream"}`.
+8. Never log message bodies or attachments.
 
 ### Fields
 **Contact:** name (required, ≤200), email (required, valid, ≤254), company (≤200), phone (≤50), service (one of the four or "Not sure yet"), message (required, ≤5000).
@@ -220,7 +226,7 @@ Per page: unique `<title>` and meta description, canonical URL on `https://getpr
 
 ## 9. Deployment
 
-1. Build on `feature/getproedge-site`. Before its first push, the owner switches the Pages project's build settings to framework **Astro**, build command `npm run build`, output `dist`, env `NODE_VERSION=22`, and adds the four secrets (Preview and Production). From then until the merge, a push to `main` fails to build and production keeps serving the last good deployment, so the current site stays up.
+1. Build on `feature/getproedge-site`. Before its first push, the owner switches the Pages project's build settings to framework **Astro**, build command `npm run build`, output `dist`, env `NODE_VERSION=24`, and adds the four secrets (Preview and Production). From then until the merge, a push to `main` fails to build and production keeps serving the last good deployment, so the current site stays up.
 2. Push the branch → Cloudflare builds a preview at the branch's `*.pages.dev` address. All testing (Section 10) happens there.
 3. Owner setup, documented step by step in `docs/setup.md`:
    - Microsoft Bookings page created; URL put in `site.ts`.
@@ -237,7 +243,7 @@ Commits use the repo-local Progressive Edge identity.
 
 ## 10. Testing
 
-- **Unit (Vitest):** `functions/_lib` — field validation (each rule, limits, enum), honeypot, Turnstile failure, attachment limits, upstream timeout and non-2xx mapping, success shapes. Written test-first.
+- **Unit (Vitest, in `tests/`):** `functions/_lib` — field validation (each rule, limits, enum), honeypot, Turnstile failure, attachment limits, upstream timeout and non-2xx mapping, success shapes; the n8n Code-node scripts (ticket shape, priority mapping, attachments); data-file integrity. Written test-first.
 - **Build:** `astro check` and `npm run build` with no errors or warnings.
 - **Links:** script crawls `dist/` and fails on any internal link to a missing page or asset.
 - **Browser (preview deploy):** every page at 375, 768 and 1280px — layout, menu open/close by mouse and keyboard, reveal animations, reduced-motion, tap-to-call/email links.
