@@ -33,24 +33,24 @@ import { CONTACT_SERVICES } from '../../functions/_lib/validate';
             <div class="field" data-field="name">
               <label for="name">Name<span class="req" aria-hidden="true">*</span></label>
               <input id="name" name="name" type="text" required maxlength="200" autocomplete="name" aria-describedby="err-name" />
-              <p class="field-error" id="err-name">Please enter your name.</p>
+              <p class="field-error" id="err-name" data-message="Please enter your name."></p>
             </div>
             <div class="field" data-field="email">
               <label for="email">Email<span class="req" aria-hidden="true">*</span></label>
               <input id="email" name="email" type="email" required maxlength="254" autocomplete="email" aria-describedby="err-email" />
-              <p class="field-error" id="err-email">Please enter a valid email address.</p>
+              <p class="field-error" id="err-email" data-message="Please enter a valid email address."></p>
             </div>
           </div>
           <div class="field-row">
             <div class="field" data-field="company">
               <label for="company">Company</label>
               <input id="company" name="company" type="text" maxlength="200" autocomplete="organization" aria-describedby="err-company" />
-              <p class="field-error" id="err-company">Please keep this under 200 characters.</p>
+              <p class="field-error" id="err-company" data-message="Please keep this under 200 characters."></p>
             </div>
             <div class="field" data-field="phone">
               <label for="phone">Phone</label>
               <input id="phone" name="phone" type="tel" maxlength="50" autocomplete="tel" aria-describedby="err-phone" />
-              <p class="field-error" id="err-phone">Please keep this under 50 characters.</p>
+              <p class="field-error" id="err-phone" data-message="Please keep this under 50 characters."></p>
             </div>
           </div>
           <div class="field" data-field="service">
@@ -62,12 +62,12 @@ import { CONTACT_SERVICES } from '../../functions/_lib/validate';
                 ))}
               </select>
             </div>
-            <p class="field-error" id="err-service">Please choose one of the options.</p>
+            <p class="field-error" id="err-service" data-message="Please choose one of the options."></p>
           </div>
           <div class="field" data-field="message">
             <label for="message">Message<span class="req" aria-hidden="true">*</span></label>
             <textarea id="message" name="message" rows="6" required maxlength="5000" aria-describedby="err-message"></textarea>
-            <p class="field-error" id="err-message">Please tell us a little about what you need.</p>
+            <p class="field-error" id="err-message" data-message="Please tell us a little about what you need."></p>
           </div>
           <div class="honeypot" aria-hidden="true">
             <label for="website">Leave this field empty</label>

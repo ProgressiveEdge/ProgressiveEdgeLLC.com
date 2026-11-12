@@ -16,12 +16,19 @@ export async function postForm(endpoint: string, body: FormData): Promise<Submit
 
 const FOCUSABLE = '[data-focus], input:not([type="hidden"]):not([hidden]), select, textarea';
 
-/** Marks the listed fields invalid and clears all others. Returns the first invalid control, or null. */
+/**
+ * Marks the listed fields invalid and clears all others. Returns the first invalid control, or null.
+ * Also fills or clears each group's error text from its data-message, so hidden messages are
+ * never read as descriptions.
+ */
 export function showFieldErrors(form: HTMLFormElement, invalid: readonly string[]): HTMLElement | null {
   let first: HTMLElement | null = null;
   for (const group of Array.from(form.querySelectorAll<HTMLElement>('[data-field]'))) {
     const bad = invalid.includes(group.dataset.field ?? '');
     group.classList.toggle('has-error', bad);
+    for (const message of Array.from(group.querySelectorAll<HTMLElement>('.field-error'))) {
+      message.textContent = bad ? (message.dataset.message ?? '') : '';
+    }
     for (const control of Array.from(group.querySelectorAll('input, select, textarea'))) {
       if (bad) control.setAttribute('aria-invalid', 'true');
       else control.removeAttribute('aria-invalid');
