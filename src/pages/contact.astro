@@ -1,0 +1,106 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import BookingLink from '../components/BookingLink.astro';
+import ContactMethods from '../components/ContactMethods.astro';
+import { site, bookingIsExternal } from '../config/site';
+import { CONTACT_SERVICES } from '../../functions/_lib/validate';
+---
+<Base title="Contact" description={`Book a call, send a message, or call ${site.phone.display}. ${site.replyPromise}`}>
+  <Fragment slot="head">
+    <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  </Fragment>
+
+  <PageHeader
+    eyebrow="Contact"
+    title="Let's talk about what you"
+    accent="need."
+    lead={`${site.replyPromise} Book a call, send a message, or reach us directly.`}
+  />
+
+  <section class="section section-alt">
+    <div class="container contact-layout">
+      <div>
+        <h2 class="section-title" id="message-title">Send a message</h2>
+        <div class="form-banner" role="alert" data-form-error hidden>
+          <strong>We couldn't send your message.</strong>
+          Please check the form and try again, or call <a href={site.phone.href}>{site.phone.display}</a> or email
+          <a href={`mailto:${site.email}`}>{site.email}</a>.
+        </div>
+
+        <form class="form-card" data-contact-form novalidate aria-labelledby="message-title">
+          <div class="field-row">
+            <div class="field" data-field="name">
+              <label for="name">Name<span class="req" aria-hidden="true">*</span></label>
+              <input id="name" name="name" type="text" required maxlength="200" autocomplete="name" aria-describedby="err-name" />
+              <p class="field-error" id="err-name">Please enter your name.</p>
+            </div>
+            <div class="field" data-field="email">
+              <label for="email">Email<span class="req" aria-hidden="true">*</span></label>
+              <input id="email" name="email" type="email" required maxlength="254" autocomplete="email" aria-describedby="err-email" />
+              <p class="field-error" id="err-email">Please enter a valid email address.</p>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field" data-field="company">
+              <label for="company">Company</label>
+              <input id="company" name="company" type="text" maxlength="200" autocomplete="organization" aria-describedby="err-company" />
+              <p class="field-error" id="err-company">Please keep this under 200 characters.</p>
+            </div>
+            <div class="field" data-field="phone">
+              <label for="phone">Phone</label>
+              <input id="phone" name="phone" type="tel" maxlength="50" autocomplete="tel" aria-describedby="err-phone" />
+              <p class="field-error" id="err-phone">Please keep this under 50 characters.</p>
+            </div>
+          </div>
+          <div class="field" data-field="service">
+            <label for="service">What can we help with?</label>
+            <div class="select-wrap">
+              <select id="service" name="service" aria-describedby="err-service">
+                {CONTACT_SERVICES.map((option) => (
+                  <option value={option} selected={option === 'Not sure yet'}>{option}</option>
+                ))}
+              </select>
+            </div>
+            <p class="field-error" id="err-service">Please choose one of the options.</p>
+          </div>
+          <div class="field" data-field="message">
+            <label for="message">Message<span class="req" aria-hidden="true">*</span></label>
+            <textarea id="message" name="message" rows="6" required maxlength="5000" aria-describedby="err-message"></textarea>
+            <p class="field-error" id="err-message">Please tell us a little about what you need.</p>
+          </div>
+          <div class="honeypot" aria-hidden="true">
+            <label for="website">Leave this field empty</label>
+            <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+          <div class="cf-turnstile turnstile" data-sitekey={site.turnstileSiteKey} data-theme="dark"></div>
+          <button class="btn btn-copper btn-block" type="submit">Send Message</button>
+        </form>
+
+        <div class="form-success" data-form-success tabindex="-1" hidden>
+          <h3>Thanks, your message is on its way.</h3>
+          <p>{site.replyPromise}</p>
+        </div>
+      </div>
+
+      <aside class="contact-side" aria-labelledby="book-title">
+        <div class="booking-card">
+          <h2 id="book-title">Book a call</h2>
+          {bookingIsExternal ? (
+            <>
+              <p>Pick a time that works for you, and we'll call you then.</p>
+              <BookingLink label="Choose a Time" />
+            </>
+          ) : (
+            <p>Online booking is coming soon. Call or send a message and we'll set up a time.</p>
+          )}
+        </div>
+        <ContactMethods />
+      </aside>
+    </div>
+  </section>
+
+  <script>
+    import '../scripts/contact-form';
+  </script>
+</Base>
