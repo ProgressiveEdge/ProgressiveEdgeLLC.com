@@ -1,7 +1,7 @@
 # Get Pro Edge Website — Design Spec
 
 **Date:** 2026-11-12
-**Status:** Awaiting owner review
+**Status:** Approved by owner 2026-11-12
 **Repo:** `ProgressiveEdge/ProgressiveEdgeLLC.com` (local `D:\-- Progressive Edge LLC\pe-website`), branch `feature/getproedge-site`
 
 ## 1. Goal
@@ -23,10 +23,21 @@ The current site (one homepage plus `support/request.html`, static HTML on Cloud
 | Reply promise | "We reply within one business day." |
 | Tagline | ai / technology / people |
 
-**Co-founders** (both shown as "Co-founder"):
+**Co-founders** (both shown as "Co-founder"). Bios approved 2026-11-12; use them verbatim. The full bio appears on About and the summary on the Home founder cards.
 
-- **David Kemp** — Director of Technology Implementation. Bio drafted from: over a decade of enterprise IT support, field operations and customer service; trusted technology leader and solution provider. Draft goes to David for approval.
-- **Stacey Grant** — Director of Operations. Bio to come; until then her profile shows photo, name and title only (no placeholder text on the live site).
+**David Kemp** — Director of Technology Implementation
+
+> *Bio:* David has spent more than a decade keeping enterprise technology working where it matters most: in the field, in front of the people who depend on it. He grew from field systems technician to lead technician, building a reputation for finding the root cause instead of patching the symptom. He then moved into technology implementation, where he prototyped new tools, built workflow automations and AI-assisted solutions, and guided them from pilot to rollout. Most recently he has managed operations and systems projects. David's prior experience with small organizations taught him how they really run and how technology impacts them. At Get Pro Edge, David leads how solutions are designed, built and delivered, pairing hands-on technical depth with plain-English communication and genuine care for the customer.
+>
+> *Summary:* More than a decade in enterprise IT support, field operations and technology implementation, from on-site troubleshooting to AI-assisted solutions.
+
+**Stacey Grant** — Director of Operations
+
+> *Bio:* Stacey brings more than twenty years of operations, project management and people leadership, including fifteen years in field operations for a national organization. She has run planning and readiness for three districts and more than 80 locations, kept relocation and construction projects on schedule, and taken new technology from pilot to adoption across more than 100 offices. Her projects have merged separate platforms into one dashboard that saved roughly $100,000 a year, and introduced an AI-powered analysis tool that cut a 60-minute review to five minutes. She has hired, coached and developed teams of up to 20 people, with engagement scores well above company benchmarks. Earlier roles in recruiting, HR consulting and executive support in banking and telecommunications grounded her in compliance, reporting and service. At Get Pro Edge, Stacey makes sure every project is scoped clearly, every client knows what happens next, and the work is delivered on time.
+>
+> *Summary:* More than twenty years leading operations, projects and teams, including technology rollouts to more than 100 locations.
+
+Bios never name past employers or schools.
 
 **Never published:** ownership split, capital contributions, home addresses, mediator list, buyout or other operating-agreement terms, or the names "Kemp Technology Group" and "Boopify Creative" (Schedule B personal property, not licensed to the company). No invented statistics, client names, logos, or testimonials.
 
@@ -60,7 +71,7 @@ Copy below is the intended substance; final wording is drafted during build and 
 1. **Hero** — eyebrow "ai / technology / people"; H1 "Technology That Works For *People.*"; subhead naming all four services ("Managed IT, AI and automation, technology consulting, and websites — from one team you can actually reach."); buttons **Book a Call** and **Our Services**.
 2. **Services** — four numbered cards (01–04), each with title, two-line summary, "Learn more →" to its page.
 3. **How it works** — three steps: **Talk** (book a free call, tell us what's going on) → **Plan** (a clear recommendation and quote) → **Support** (we put it in place and stay with you).
-4. **Meet the founders** — two compact cards (photo, name, title) linking to About.
+4. **Meet the founders** — two compact cards (photo, name, title, summary) linking to About.
 5. **Closing call to action** — "Ready to find your edge?" with **Book a Free Consultation** and the phone number.
 
 ### Service pages (one shared template, four data entries)
@@ -80,7 +91,7 @@ Page header, the four service cards (larger, with "included" highlights), and th
 
 ### About
 1. Page header — why the company exists (drafted from what the owners provide; until then, a short statement that Progressive Edge was started by David Kemp and Stacey Grant to give businesses of every size dependable, senior-level technology help from people they know by name).
-2. Co-founder profiles — 3:4 photo in a corner-bracket frame (echoes the P/e mark), name, "Co-founder · {title}", bio (omitted when empty).
+2. Co-founder profiles — 3:4 photo in a corner-bracket frame (echoes the P/e mark), name, "Co-founder · {title}", full bio.
 3. Values — Honesty Over Comfort; Outcomes Over Outputs; Simplicity as a Feature; Partnership, Not Vendor (copy carried from the earlier About draft).
 4. Company facts — "Get Pro Edge is a Progressive Edge company. Progressive Edge LLC is a Michigan limited liability company based in Auburn, Michigan."
 5. Closing call to action.
@@ -148,7 +159,7 @@ pe-website/
                             reply promise, location, Turnstile site key
     data/services.ts        the four services (slug, title, promise, summary,
                             included[], whoFor[], steps[], faqs[])
-    data/team.ts            co-founders (name, title, bio?, photo)
+    data/team.ts            co-founders (name, title, bio, summary, photo)
     styles/site.css         tokens + base + shared component styles
     layouts/Base.astro      <head> meta/OG/JSON-LD, skip link, Nav, Footer, reveal script
     components/             Nav, Footer, Wordmark, PageHeader, SectionHeading,
@@ -237,11 +248,10 @@ Commits use the repo-local Progressive Edge identity.
 ## 11. Open items (not blocking the build)
 
 1. **Assumed name mismatch:** the draft operating agreement's Schedule C says "Go Pro Edge". The name filed with Michigan LARA must match "Get Pro Edge" before launch.
-2. Stacey's bio.
-3. David's approval of his drafted bio, and both owners' review of all drafted copy.
-4. Microsoft Bookings URL and Turnstile keys (site falls back to `/contact` for booking until set).
-5. "Free consultation" is carried over from the current site — confirm it stays free.
-6. Service-area statement — omitted unless the owners want one (e.g. "remote support anywhere in the U.S.").
+2. Stacey confirms she is comfortable publishing the figures in her bio (100+ offices, ~$100,000 savings, 60→5 minute review); both owners review the rest of the drafted copy.
+3. Microsoft Bookings URL and Turnstile keys (site falls back to `/contact` for booking until set).
+4. "Free consultation" is carried over from the current site — confirm it stays free.
+5. Service-area statement — omitted unless the owners want one (e.g. "remote support anywhere in the U.S.").
 
 ## 12. Out of scope
 
