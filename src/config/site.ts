@@ -13,9 +13,8 @@ export const site = {
   location: { city: 'Auburn', region: 'MI', regionName: 'Michigan', country: 'US' },
   // Public Microsoft Bookings page URL. While empty, every Book a Call button goes to /contact.
   bookingUrl: '' as string,
-  // Cloudflare Turnstile site key (public). This is Cloudflare's always-pass TEST key.
-  // Replace it with the real key before launch (docs/setup.md, step 2).
-  turnstileSiteKey: '1x00000000000000000000AA' as string,
+  // Cloudflare Turnstile site key (public), from the "getproedge.org forms" widget (docs/setup.md, step 2).
+  turnstileSiteKey: '0x4AAAAAAF-wQ43yQ5oxxgYX' as string,
 } as const;
 
 export const bookingHref: string = site.bookingUrl || '/contact';

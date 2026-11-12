@@ -1,6 +1,6 @@
 # Get Pro Edge website — owner setup
 
-Do these once. Step 1 must be done **before the `feature/getproedge-site` branch is first pushed**.
+Do these once, in order. Steps 1–6 come before launch; step 7 comes after the branch is merged. After finishing step 1, retry the branch's build in Cloudflare so it uses the new settings.
 
 The site runs on the existing Cloudflare **Worker** `progressiveedgellc-com` (Workers & Pages). `wrangler.jsonc` in the repo tells it to serve the built site from `dist/` and to run `worker/index.ts` for the two form endpoints.
 
@@ -15,16 +15,20 @@ Cloudflare dashboard → Workers & Pages → `progressiveedgellc-com` → Settin
 - Root directory: leave as the repository root
 - Build variables: add `NODE_VERSION` = `24`
 
-**Variables and Secrets** (Settings → Variables and Secrets) — add each as type **Secret**:
-
-| Name | Value |
-|---|---|
-| `N8N_WEBHOOK_SECRET` | a long random value — in Git Bash: `openssl rand -hex 32`. Keep it for step 5. |
-| `TURNSTILE_SECRET_KEY` | from step 2 (add it once step 2 is done) |
-
-The two n8n webhook URLs are not secret and already live in `wrangler.jsonc`; don't add them here. Every deploy replaces the Worker's plain-text variables with the ones in `wrangler.jsonc`; secrets are kept.
-
 **Preview URLs** (Settings → Domains & Routes): make sure **workers.dev** and **Preview URLs** are enabled, so a push to `feature/getproedge-site` gets its own test address. The branch's build log prints that address.
+
+Save, then retry the `feature/getproedge-site` build and wait for it to succeed.
+
+**Secrets.** The dashboard's Variables and Secrets page won't accept secrets yet. The live Worker is still the old static-only site, and the page says "Variables cannot be added to a Worker that only has static assets." Add the secrets from your computer with Wrangler instead, **after the branch build has succeeded**:
+
+1. Open PowerShell (not Git Bash) in the `pe-website` folder and run `npx wrangler login`. A browser window asks you to allow access to your Cloudflare account.
+2. Make the webhook secret. In Git Bash, `openssl rand -hex 32 | clip` copies a random value to the clipboard without showing it. Save it in your password manager, because step 5 needs it.
+3. Back in PowerShell, run `npx wrangler versions secret put N8N_WEBHOOK_SECRET` and paste the value at the hidden prompt.
+4. After step 2: run `npx wrangler versions secret put TURNSTILE_SECRET_KEY` and paste the Turnstile secret key.
+
+Each command saves a new version of the Worker that includes the secret. Neither changes the live site. Later branch builds, and the deploy after the merge, carry the secrets forward. After the merge, Settings → Variables and Secrets should list both secrets. If one is missing, add it there as type **Secret**; the page accepts secrets once the Worker has code.
+
+The two n8n webhook URLs are not secret and already live in `wrangler.jsonc`; don't add them as secrets. Every deploy replaces the Worker's plain-text variables with the ones in `wrangler.jsonc`; secrets are kept.
 
 Once the build command is set, a push to `main` fails to build until this branch is merged, because the old `main` has no `package.json`. Production keeps serving the current site.
 
