@@ -11,7 +11,8 @@ Cloudflare dashboard → Workers & Pages → `progressiveedgellc-com` → Settin
 **Builds** (Settings → Builds → Build configuration):
 - Build command: `npm run build`
 - Deploy command: `npx wrangler deploy` (leave as is)
-- Non-production branch deploy command: `npx wrangler versions upload` (leave as is; this builds a preview of other branches)
+- Production branch: `main`. Never set it to another branch: the production branch goes live.
+- **Previews Base** tab (next to **Production** at the top of Builds) → **Preview command**: `npx wrangler versions upload`, with preview builds turned on for non-production branches. Cloudflare's default is `npx wrangler preview`; change it. That beta command needs a separate `previews` block and its own copies of the secrets. `versions upload` builds a preview of other branches that reuses the Worker's secrets.
 - Root directory: leave as the repository root
 - Build variables: add `NODE_VERSION` = `24`
 
