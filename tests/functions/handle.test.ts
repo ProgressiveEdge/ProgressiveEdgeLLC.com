@@ -39,20 +39,30 @@ const SUPPORT: Record<string, string> = {
   website: '',
 };
 
-function post(fields: Record<string, string>, files: File[] = [], headers: Record<string, string> = {}): Request {
+function post(
+  fields: Record<string, string>,
+  files: File[] = [],
+  headers: Record<string, string> = {},
+  url = 'https://getproedge.org/api/test',
+): Request {
   const body = new FormData();
   for (const [name, value] of Object.entries(fields)) body.append(name, value);
   for (const file of files) body.append('attachments', file);
-  return new Request('https://getproedge.org/api/test', {
+  return new Request(url, {
     method: 'POST',
     body,
     headers: { 'CF-Connecting-IP': '203.0.113.9', ...headers },
   });
 }
 
-/** siteverify answers `turnstile`; every other URL is n8n and answers `n8n()`. */
-function upstream(turnstile = true, n8n: () => Response = () => Response.json({ ok: true })) {
-  return fakeFetch((url) => (url.includes('siteverify') ? Response.json({ success: turnstile }) : n8n()));
+/**
+ * siteverify answers `turnstile` for a token solved on `solvedOn`; every other URL is n8n
+ * and answers `n8n()`. post() sends to getproedge.org, so that is the default.
+ */
+function upstream(turnstile = true, n8n: () => Response = () => Response.json({ ok: true }), solvedOn = 'getproedge.org') {
+  return fakeFetch((url) =>
+    url.includes('siteverify') ? Response.json({ success: turnstile, hostname: solvedOn }) : n8n(),
+  );
 }
 
 async function read(res: Response) {
@@ -92,6 +102,25 @@ describe('handleSubmission', () => {
     expect(await read(res)).toEqual({ status: 400, body: { error: 'verification' } });
     expect(up.calls).toHaveLength(1);
     expect((up.calls[0].init.body as FormData).get('remoteip')).toBe('203.0.113.9');
+  });
+
+  it('rejects a token solved on another site without contacting n8n', async () => {
+    const up = upstream(true, undefined, 'elsewhere.example');
+    const res = await handleSubmission(post(CONTACT), ENV, 'contact', up.impl);
+    expect(await read(res)).toEqual({ status: 400, body: { error: 'verification' } });
+    expect(up.calls).toHaveLength(1);
+  });
+
+  it('accepts a token solved on the host the form was posted to', async () => {
+    const up = upstream(true, undefined, 'preview.example.workers.dev');
+    const req = post(CONTACT, [], {}, 'https://preview.example.workers.dev/api/contact');
+    expect(await read(await handleSubmission(req, ENV, 'contact', up.impl))).toEqual({ status: 200, body: { ok: true } });
+  });
+
+  it('marks its JSON answers no-store and nosniff', async () => {
+    const res = await handleSubmission(post(CONTACT), ENV, 'contact', upstream().impl);
+    expect(res.headers.get('Cache-Control')).toBe('no-store');
+    expect(res.headers.get('X-Content-Type-Options')).toBe('nosniff');
   });
 
   it('returns the invalid field names without contacting n8n', async () => {
