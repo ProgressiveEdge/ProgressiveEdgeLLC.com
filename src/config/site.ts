@@ -1,7 +1,6 @@
 // The only place contact details and identity live. Pages and components import from here.
 export const site = {
-  name: 'Get Pro Edge',
-  endorsement: 'a Progressive Edge company',
+  name: 'Progressive Edge',
   legalName: 'Progressive Edge LLC',
   url: 'https://getproedge.org',
   tagline: 'ai / technology / people',

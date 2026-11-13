@@ -8,11 +8,11 @@ import { site } from '../config/site';
 import { team } from '../data/team';
 import { values } from '../data/values';
 
-const companyLine = `${site.name} is ${site.endorsement}. ${site.legalName} is a Michigan limited liability company based in ${site.location.city}, ${site.location.regionName}.`;
+const companyLine = `${site.legalName} is a Michigan limited liability company based in ${site.location.city}, ${site.location.regionName}.`;
 ---
 <Base
   title="About"
-  description={`${site.name} is ${site.endorsement}, founded by David Kemp and Stacey Grant in ${site.location.city}, ${site.location.regionName}.`}
+  description={`${site.name} was founded by David Kemp and Stacey Grant in ${site.location.city}, ${site.location.regionName}.`}
 >
   <PageHeader
     eyebrow="About"

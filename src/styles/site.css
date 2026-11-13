@@ -1,4 +1,4 @@
-/* Get Pro Edge — the one stylesheet.
+/* Progressive Edge — the one stylesheet.
    Contrast rule: --silver text only on --ink / --ink-2. On --ink-3 use --silver-light. */
 
 :root {
@@ -134,7 +134,7 @@ strong { color: var(--paper); }
   text-decoration: none;
   white-space: nowrap;
 }
-.wm-get { color: var(--paper); text-transform: uppercase; }
+.wm-prog { color: var(--paper); text-transform: uppercase; }
 .wm-slash { color: var(--ice-light); margin-inline: 2px; }
 .wm-edge { color: var(--silver-light); text-transform: lowercase; }
 
@@ -575,7 +575,6 @@ strong { color: var(--paper); }
 @media (min-width: 768px) {
   .footer-grid { grid-template-columns: 2fr 1fr 1fr; align-items: start; }
 }
-.footer-endorse { margin-top: 2px; font-size: 0.8rem; color: var(--silver); letter-spacing: 0.06em; }
 .footer-tagline { margin-top: 12px; font-size: 0.7rem; color: var(--silver); letter-spacing: 0.18em; text-transform: uppercase; }
 .footer-links { list-style: none; padding: 0; }
 .footer-links a,

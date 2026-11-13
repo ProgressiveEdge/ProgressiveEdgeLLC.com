@@ -12,8 +12,8 @@ const NEVER_IN_BIOS = [
 
 describe('site config', () => {
   it('has the approved identity and contact details', () => {
-    expect(site.name).toBe('Get Pro Edge');
-    expect(site.endorsement).toBe('a Progressive Edge company');
+    expect(site.name).toBe('Progressive Edge');
+    expect(site).not.toHaveProperty('endorsement');
     expect(site.legalName).toBe('Progressive Edge LLC');
     expect(site.phone).toEqual({ display: '(989) 200-4814', href: 'tel:+19892004814' });
     expect(site.email).toBe('info@getproedge.org');

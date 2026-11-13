@@ -30,7 +30,7 @@ export const services: Service[] = [
     promise: 'Your IT, handled.',
     summary: 'Help desk, Microsoft 365, computers and networks — looked after by a team that knows your setup.',
     metaDescription:
-      'Managed IT support from Get Pro Edge: help desk, remote support, Microsoft 365, devices, networks and security basics.',
+      'Managed IT support from Progressive Edge: help desk, remote support, Microsoft 365, devices, networks and security basics.',
     included: [
       'Help desk by phone, email and our support form',
       'Remote support',
@@ -67,7 +67,7 @@ export const services: Service[] = [
     promise: 'Put AI to work on the busywork.',
     summary: 'AI phone agents, workflow automation and practical AI adoption that take busywork off your team.',
     metaDescription:
-      'AI and automation from Get Pro Edge: AI receptionists, workflow automation, AI adoption and custom assistants.',
+      'AI and automation from Progressive Edge: AI receptionists, workflow automation, AI adoption and custom assistants.',
     included: [
       'AI receptionist and phone agents that answer, route and take messages',
       'Workflow automation between the apps you already use',
@@ -105,7 +105,7 @@ export const services: Service[] = [
     promise: 'Senior technology thinking, without a full-time hire.',
     summary: 'Assessments, roadmaps and straight answers for the big technology decisions in front of you.',
     metaDescription:
-      'Technology consulting from Get Pro Edge: assessments, roadmaps, modernization, vendor selection and fractional leadership.',
+      'Technology consulting from Progressive Edge: assessments, roadmaps, modernization, vendor selection and fractional leadership.',
     included: [
       'Technology assessment and roadmap',
       'Modernization — cloud and Microsoft 365 moves, retiring old systems',
@@ -143,7 +143,7 @@ export const services: Service[] = [
     promise: 'A web presence that brings in work.',
     summary: 'Websites, hosting, domains and online tools built to turn visitors into customers.',
     metaDescription:
-      'Websites and digital products from Get Pro Edge: design and build, hosting, domains, business email and online tools.',
+      'Websites and digital products from Progressive Edge: design and build, hosting, domains, business email and online tools.',
     included: [
       'Website design and build',
       'Hosting, domains and business email setup',
