@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+---
+<Base title="Page not found" description="The page you were looking for could not be found." noindex>
+  <PageHeader eyebrow="404" title="We couldn't find that" accent="page." lead="The link may be old or mistyped. Try one of these instead.">
+    <div class="btn-row">
+      <a class="btn btn-copper" href="/">Home</a>
+      <a class="btn btn-ice" href="/services">Services</a>
+      <a class="btn btn-ice" href="/contact">Contact</a>
+    </div>
+  </PageHeader>
+</Base>

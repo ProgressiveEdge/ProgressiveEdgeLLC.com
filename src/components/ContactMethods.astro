@@ -1,0 +1,14 @@
+---
+import { site } from '../config/site';
+---
+<div class="contact-grid">
+  <div class="contact-card">
+    <h3 class="section-label">Call</h3>
+    <a href={site.phone.href}>{site.phone.display}</a>
+  </div>
+  <div class="contact-card">
+    <h3 class="section-label">Email</h3>
+    <a href={`mailto:${site.email}`}>{site.email}</a>
+    <p>{site.replyPromise}</p>
+  </div>
+</div>

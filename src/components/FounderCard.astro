@@ -1,0 +1,33 @@
+---
+import { Image } from 'astro:assets';
+import type { Founder } from '../data/team';
+
+interface Props {
+  founder: Founder;
+  variant?: 'compact' | 'full';
+}
+const { founder, variant = 'full' } = Astro.props;
+---
+{variant === 'compact' ? (
+  <article class="founder-card founder-card--compact" data-reveal>
+    <div class="photo-frame">
+      <Image src={founder.photo} alt={founder.photoAlt} width={208} />
+    </div>
+    <div>
+      <h3 class="founder-name">{founder.name}</h3>
+      <p class="founder-role">Co-founder · {founder.title}</p>
+      <p class="founder-summary">{founder.summary}</p>
+    </div>
+  </article>
+) : (
+  <article class="founder-card" data-reveal>
+    <div class="photo-frame">
+      <Image src={founder.photo} alt={founder.photoAlt} width={720} />
+    </div>
+    <div class="founder-plate">
+      <h3 class="founder-name">{founder.name}</h3>
+      <p class="founder-role">Co-founder · {founder.title}</p>
+    </div>
+    <p class="founder-bio">{founder.bio}</p>
+  </article>
+)}

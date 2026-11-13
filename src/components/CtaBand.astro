@@ -1,0 +1,23 @@
+---
+import BookingLink from './BookingLink.astro';
+import { site } from '../config/site';
+
+interface Props {
+  title?: string;
+  text?: string;
+}
+const {
+  title = 'Ready to find your edge?',
+  text = "Tell us what's going on. We'll listen, ask good questions, and give you a straight answer.",
+} = Astro.props;
+---
+<section class="cta-band" aria-labelledby="cta-title">
+  <div class="container">
+    <h2 id="cta-title">{title}</h2>
+    <p>{text}</p>
+    <div class="btn-row btn-row--center">
+      <BookingLink label="Book a Free Consultation" />
+      <a class="btn btn-ice" href={site.phone.href}>Call {site.phone.display}</a>
+    </div>
+  </div>
+</section>

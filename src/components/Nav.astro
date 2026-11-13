@@ -1,0 +1,33 @@
+---
+import Wordmark from './Wordmark.astro';
+import BookingLink from './BookingLink.astro';
+import { isCurrent } from '../lib/paths';
+
+const links = [
+  { href: '/services', label: 'Services' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
+  { href: '/support', label: 'Support' },
+];
+const pathname = Astro.url.pathname;
+---
+<header class="site-nav" data-nav>
+  <div class="container nav-inner">
+    <Wordmark />
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-panel" data-nav-toggle>
+      <span class="sr-only">Menu</span>
+      <span class="nav-toggle-bars" aria-hidden="true"></span>
+    </button>
+    <nav class="nav-panel" id="nav-panel" aria-label="Main" data-nav-panel>
+      <ul class="nav-links">
+        {links.map((link) => (
+          <li><a href={link.href} aria-current={isCurrent(pathname, link.href) ? 'page' : undefined}>{link.label}</a></li>
+        ))}
+      </ul>
+      <BookingLink />
+    </nav>
+  </div>
+</header>
+<script>
+  import '../scripts/nav';
+</script>

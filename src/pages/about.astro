@@ -1,0 +1,57 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import FounderCard from '../components/FounderCard.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { site } from '../config/site';
+import { team } from '../data/team';
+import { values } from '../data/values';
+
+const companyLine = `${site.name} is ${site.endorsement}. ${site.legalName} is a Michigan limited liability company based in ${site.location.city}, ${site.location.regionName}.`;
+---
+<Base
+  title="About"
+  description={`${site.name} is ${site.endorsement}, founded by David Kemp and Stacey Grant in ${site.location.city}, ${site.location.regionName}.`}
+>
+  <PageHeader
+    eyebrow="About"
+    title="Senior-level technology help from people you"
+    accent="know by name."
+    lead="Progressive Edge was started by David Kemp and Stacey Grant to give businesses of every size dependable, senior-level technology help from people they know by name."
+  />
+
+  <section class="section section-alt" aria-labelledby="founders-title">
+    <div class="container">
+      <SectionHeading label="The Founders" title="Meet David and Stacey." id="founders-title" />
+      <div class="founder-grid">
+        {team.map((founder) => <FounderCard founder={founder} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="values-title">
+    <div class="container">
+      <SectionHeading label="What We Stand For" title="The principles that guide every engagement." id="values-title" />
+      <div class="values-grid">
+        {values.map((value, index) => (
+          <div class="value" data-reveal>
+            <p class="value-num" aria-hidden="true">{String(index + 1).padStart(2, '0')}</p>
+            <div class="value-rule" aria-hidden="true"></div>
+            <h3>{value.title}</h3>
+            <p>{value.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" aria-labelledby="company-title">
+    <div class="container">
+      <SectionHeading label="The Company" title="Who we are, officially." id="company-title" />
+      <p class="lead">{companyLine}</p>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>

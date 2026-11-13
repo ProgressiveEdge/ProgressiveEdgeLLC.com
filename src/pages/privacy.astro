@@ -1,0 +1,62 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { site } from '../config/site';
+
+// Update at launch if the site goes live on a different date (docs/setup.md, step 7).
+const effective = 'November 12, 2026';
+const host = new URL(site.url).host;
+---
+<Base title="Privacy Policy" description={`How ${site.name} collects, uses and protects the information you share with us.`}>
+  <PageHeader
+    eyebrow="Privacy"
+    title="Privacy"
+    accent="Policy"
+    lead={`Effective ${effective}. This policy explains what ${site.name} collects through this website and how we use it.`}
+  />
+  <section class="section section-alt">
+    <div class="container prose">
+      <h2>Who we are</h2>
+      <p>{site.name} is {site.endorsement}. {site.legalName} ("we", "us") runs this website, {host}.</p>
+
+      <h2>What we collect</h2>
+      <ul>
+        <li><strong>Contact form:</strong> your name and email address, plus anything else you choose to give us — company, phone number, the service you're interested in and your message.</li>
+        <li><strong>Support form:</strong> your contact details, the details of your issue, any files you attach, and whether we may start a remote support session.</li>
+        <li><strong>Booking a call:</strong> Microsoft Bookings collects your name, email address, phone number and the time you choose.</li>
+        <li><strong>Email and phone:</strong> whatever you send or tell us.</li>
+      </ul>
+      <p>This site does not use advertising or tracking cookies. We count visits with Cloudflare Web Analytics, which measures page views without cookies and without identifying you. Our forms use Cloudflare Turnstile to check that a person, not a bot, is submitting them; Turnstile looks at technical information from your browser to do this.</p>
+
+      <h2>How we use it</h2>
+      <p>We use your information to answer you, schedule calls, provide and support our services, and keep this site secure. We do not sell your information or share it for advertising.</p>
+
+      <h2>Where it is processed</h2>
+      <ul>
+        <li>Cloudflare delivers this website and runs Turnstile and Web Analytics.</li>
+        <li>Form submissions become tickets in our help desk, which runs on servers we operate.</li>
+        <li>Microsoft 365 provides our email and Microsoft Bookings.</li>
+        <li>Google Fonts supplies this site's typefaces, so your browser contacts Google (which sees your IP address) when a page loads.</li>
+      </ul>
+
+      <h2>How long we keep it</h2>
+      <p>We keep messages and support tickets for as long as we need them to serve you and to meet legal and accounting obligations, then delete them.</p>
+
+      <h2>Your choices</h2>
+      <p>You can ask to see, correct or delete the information we hold about you by emailing <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+
+      <h2>Children</h2>
+      <p>This site is meant for businesses and is not directed to children under 13.</p>
+
+      <h2>Changes</h2>
+      <p>If we change this policy, we will update this page and its effective date.</p>
+
+      <h2>Contact</h2>
+      <p>
+        {site.legalName}, {site.location.city}, {site.location.regionName} ·
+        <a href={site.phone.href}>{site.phone.display}</a> ·
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+      </p>
+    </div>
+  </section>
+</Base>

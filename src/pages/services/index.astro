@@ -1,0 +1,27 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { services } from '../../data/services';
+---
+<Base
+  title="Services"
+  description="Managed IT support, AI and automation, technology consulting, and websites from Get Pro Edge."
+>
+  <PageHeader
+    eyebrow="Services"
+    title="Everything your technology needs, from"
+    accent="one team."
+    lead="Managed IT, AI and automation, technology consulting, and websites. Pick one, or let us handle it all."
+  />
+  <section class="section section-alt" aria-labelledby="all-services">
+    <div class="container">
+      <h2 class="sr-only" id="all-services">Our services</h2>
+      <div class="card-grid">
+        {services.map((service) => <ServiceCard service={service} detailed />)}
+      </div>
+    </div>
+  </section>
+  <CtaBand />
+</Base>

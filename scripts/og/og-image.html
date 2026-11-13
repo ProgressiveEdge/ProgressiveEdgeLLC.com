@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Quantico:wght@700&display=block">
+<style>
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+  body { position: relative; background: #0F1420; color: #F6F8FB; font-family: 'Quantico', sans-serif; }
+  body::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(154,232,247,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(154,232,247,0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+  .glow { position: absolute; right: -120px; top: -120px; width: 700px; height: 600px; background: radial-gradient(ellipse, rgba(47,143,168,0.22) 0%, transparent 60%); }
+  .wrap { position: absolute; inset: 0; display: flex; align-items: center; gap: 64px; padding: 0 96px; }
+  .mark { width: 220px; height: 220px; }
+  .wordmark { font-family: 'Michroma', monospace; font-size: 52px; letter-spacing: 0.06em; white-space: nowrap; }
+  .slash { color: #9AE8F7; margin: 0 4px; }
+  .edge { color: #C3CAD4; }
+  .endorse { margin-top: 18px; font-size: 24px; color: #C3CAD4; letter-spacing: 0.08em; }
+  .tagline { margin-top: 36px; font-size: 20px; letter-spacing: 0.3em; text-transform: uppercase; color: #9AE8F7; }
+  .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: #2F8FA8; }
+</style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="wrap">
+    <img class="mark" src="mark.png" alt="">
+    <div>
+      <div class="wordmark">GET PRO<span class="slash">/</span><span class="edge">edge</span></div>
+      <div class="endorse">a Progressive Edge company</div>
+      <div class="tagline">ai / technology / people</div>
+    </div>
+  </div>
+  <div class="bar"></div>
+</body>
+</html>

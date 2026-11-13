@@ -1,0 +1,54 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import Steps from '../../components/Steps.astro';
+import Faq from '../../components/Faq.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { services, type Service } from '../../data/services';
+
+export function getStaticPaths() {
+  return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
+}
+
+interface Props {
+  service: Service;
+}
+const { service } = Astro.props;
+---
+<Base title={service.title} description={service.metaDescription}>
+  <PageHeader eyebrow={`Service ${service.number}`} title={service.title} lead={service.promise} />
+
+  <section class="section section-alt" aria-labelledby="included-title">
+    <div class="container two-col">
+      <div>
+        <SectionHeading label="What's Included" title="What we take care of" id="included-title" />
+        <ul class="check-list">
+          {service.included.map((item) => <li data-reveal>{item}</li>)}
+        </ul>
+      </div>
+      <div>
+        <SectionHeading label="Who It's For" title="A good fit for" id="who-title" />
+        <ul class="check-list">
+          {service.whoFor.map((item) => <li data-reveal>{item}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="engagement-title">
+    <div class="container">
+      <SectionHeading label="How It Works" title="How an engagement works" id="engagement-title" />
+      <Steps steps={service.steps} />
+    </div>
+  </section>
+
+  <section class="section section-alt" aria-labelledby="faq-title">
+    <div class="container">
+      <SectionHeading label="Questions" title="Common questions" id="faq-title" />
+      <Faq faqs={service.faqs} />
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
