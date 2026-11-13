@@ -1,4 +1,4 @@
-# Get Pro Edge website — owner setup
+# Progressive Edge website — owner setup
 
 Do these once, in order. Steps 1–6 come before launch; step 7 comes after the branch is merged. After finishing step 1, retry the branch's build in Cloudflare so it uses the new settings.
 
@@ -115,6 +115,5 @@ Worker → **Deployments** → the previous version → **Rollback**.
 
 - Cloudflare's free Workers plan allows 10 ms of CPU per request. Reading a support request with large attachments may go over that, and the form then shows its error banner. If it happens, turn on **Workers Paid** ($5/month) in the Cloudflare account, which raises the limit.
 - The privacy policy is a plain-language draft, not legal advice.
-- The assumed name filed with Michigan must read "Get Pro Edge" before launch. Schedule C of the draft operating agreement says "Go Pro Edge".
 - Stacey should confirm she is comfortable publishing the figures in her bio, and both owners should review the drafted service copy.
 - "Free consultation" wording is carried over from the old site. Confirm it stays free.
