@@ -1,5 +1,6 @@
-// Form rules shared by the Pages Functions (server) and the form scripts (browser),
-// so both sides apply exactly the same choices and limits.
+// Form rules shared by the Worker (server) and the form scripts (browser), so both sides apply
+// exactly the same choices and limits. scripts/check-dist.mjs also checks the built forms against
+// them, so this file must stay plain enough for Node to run directly (types only, no enums).
 
 export const CONTACT_SERVICES = [
   'Managed IT Support',
@@ -40,7 +41,7 @@ export interface FileMeta {
   size: number;
 }
 
-interface Rule {
+export interface Rule {
   required?: boolean;
   max?: number;
   email?: boolean;
@@ -49,7 +50,7 @@ interface Rule {
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const CONTACT_RULES: Record<string, Rule> = {
+export const CONTACT_RULES: Record<string, Rule> = {
   name: { required: true, max: 200 },
   email: { required: true, max: 254, email: true },
   company: { max: 200 },
@@ -58,7 +59,7 @@ const CONTACT_RULES: Record<string, Rule> = {
   message: { required: true, max: 5000 },
 };
 
-const SUPPORT_RULES: Record<string, Rule> = {
+export const SUPPORT_RULES: Record<string, Rule> = {
   name: { required: true, max: 200 },
   company: { max: 200 },
   email: { required: true, max: 254, email: true },

@@ -7,9 +7,11 @@
   "main": "worker/index.ts",
   "compatibility_date": "2026-10-01",
   // Wrangler builds the site before every deploy, version upload or Preview, so dist/
-  // exists even when a Cloudflare build skips its own build command.
+  // exists even when a Cloudflare build skips its own build command. check:dist then checks
+  // the build (links, banned text, Turnstile site key, forms against the Worker's rules);
+  // if it fails, nothing is uploaded and the live site keeps its current version.
   "build": {
-    "command": "npm run build"
+    "command": "npm run build && npm run check:dist"
   },
   "assets": {
     "directory": "./dist",
