@@ -93,6 +93,20 @@ Create `info@getproedge.org` in the Microsoft 365 admin center, as a mailbox, sh
 4. Cloudflare dashboard → Analytics & Logs → **Web Analytics** → Add a site → `getproedge.org` → automatic setup. It is cookieless.
 5. If the launch date isn't November 12, 2026, update `effective` in `src/pages/privacy.astro`.
 
+## Build checks and headers
+
+Every Cloudflare build ends with `npm run check:dist`, set in `wrangler.jsonc`. It fails the build if:
+- a link is broken;
+- banned text appears on a page;
+- a Turnstile site key is empty or one of Cloudflare's test keys;
+- the contact or support form no longer matches the rules the Worker enforces.
+
+A failed check stops the upload, and the live site keeps its current version. The build log names each problem.
+
+`public/_headers` sets the security headers for every page and the long cache for `/_astro/` files.
+
+The forms accept a Turnstile token only when it was solved on the same address the form was sent from. A preview address therefore needs its own entry in the Turnstile widget's hostname list (step 2).
+
 ## Rollback
 
 Worker → **Deployments** → the previous version → **Rollback**.

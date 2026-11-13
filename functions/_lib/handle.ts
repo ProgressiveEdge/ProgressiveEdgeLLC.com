@@ -20,11 +20,11 @@ export interface Env {
 export type FormKind = 'contact' | 'support';
 
 const json = (status: number, body: unknown): Response =>
-  Response.json(body, { status, headers: { 'Cache-Control': 'no-store' } });
+  Response.json(body, { status, headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } });
 
 /**
  * One form submission, start to finish. Never logs what the visitor typed or attached.
- * Order: method → size → honeypot → config → Turnstile → validation → n8n.
+ * Order: method → size → honeypot → config → Turnstile (valid, and solved on this host) → validation → n8n.
  */
 export async function handleSubmission(
   request: Request,
@@ -60,6 +60,7 @@ export async function handleSubmission(
     typeof token === 'string' ? token : '',
     env.TURNSTILE_SECRET_KEY,
     request.headers.get('CF-Connecting-IP'),
+    new URL(request.url).hostname,
     fetchImpl,
   );
   if (!human) return json(400, { error: 'verification' });
