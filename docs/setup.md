@@ -12,22 +12,22 @@ Cloudflare dashboard → Workers & Pages → `progressiveedgellc-com` → Settin
 - Build command: `npm run build`
 - Deploy command: `npx wrangler deploy` (leave as is)
 - Production branch: `main`. Never set it to another branch: the production branch goes live.
-- **Previews Base** tab (next to **Production** at the top of Builds) → **Preview command**: `npx wrangler versions upload`, with preview builds turned on for non-production branches. Cloudflare's default is `npx wrangler preview`; change it. That beta command needs a separate `previews` block and its own copies of the secrets. `versions upload` builds a preview of other branches that reuses the Worker's secrets.
+- Preview command (**Previews Base** tab, next to **Production** at the top of Builds): leave Cloudflare's default, `npx wrangler preview`. `npx wrangler versions upload` also works. `wrangler.jsonc` has the `previews` settings that `wrangler preview` needs, and its `build.command` makes Wrangler build the site itself, so branch builds work even if the Previews Base tab has no build command.
 - Root directory: leave as the repository root
-- Build variables: add `NODE_VERSION` = `24`
+- Node version: nothing to set. The build reads `.nvmrc` (Node 24).
 
 **Preview URLs** (Settings → Domains & Routes): make sure **workers.dev** and **Preview URLs** are enabled, so a push to `feature/getproedge-site` gets its own test address. The branch's build log prints that address.
 
 Save, then retry the `feature/getproedge-site` build and wait for it to succeed.
 
-**Secrets.** The dashboard's Variables and Secrets page won't accept secrets yet. The live Worker is still the old static-only site, and the page says "Variables cannot be added to a Worker that only has static assets." Add the secrets from your computer with Wrangler instead, **after the branch build has succeeded**:
+**Secrets.** The dashboard's Variables and Secrets page won't accept secrets yet. The live Worker is still the old static-only site, and the page says "Variables cannot be added to a Worker that only has static assets." Add the secrets from your computer with Wrangler instead, **once a version with code exists** (after a successful branch build, or after `npx wrangler versions upload` from the `pe-website` folder). Secrets added while the Worker has no code are dropped:
 
 1. Open PowerShell (not Git Bash) in the `pe-website` folder and run `npx wrangler login`. A browser window asks you to allow access to your Cloudflare account.
 2. Make the webhook secret. In Git Bash, `openssl rand -hex 32 | clip` copies a random value to the clipboard without showing it. Save it in your password manager, because step 5 needs it.
 3. Back in PowerShell, run `npx wrangler versions secret put N8N_WEBHOOK_SECRET` and paste the value at the hidden prompt.
 4. After step 2: run `npx wrangler versions secret put TURNSTILE_SECRET_KEY` and paste the Turnstile secret key.
 
-Each command saves a new version of the Worker that includes the secret. Neither changes the live site. Later branch builds, and the deploy after the merge, carry the secrets forward. After the merge, Settings → Variables and Secrets should list both secrets. If one is missing, add it there as type **Secret**; the page accepts secrets once the Worker has code.
+Each command saves a new version of the Worker that includes the secret. Neither changes the live site. Later version uploads, and the deploy after the merge, carry the secrets forward. Previews made by `wrangler preview` keep their own secrets. To test the forms on one, run `npx wrangler preview base-config secret put N8N_WEBHOOK_SECRET` and the same for `TURNSTILE_SECRET_KEY`, and add the Preview's hostname to the Turnstile widget. After the merge, Settings → Variables and Secrets should list both secrets. If one is missing, add it there as type **Secret**; the page accepts secrets once the Worker has code.
 
 The two n8n webhook URLs are not secret and already live in `wrangler.jsonc`; don't add them as secrets. Every deploy replaces the Worker's plain-text variables with the ones in `wrangler.jsonc`; secrets are kept.
 
